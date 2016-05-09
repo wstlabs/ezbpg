@@ -71,8 +71,8 @@ class Matcher(object):
             k in self.b and j in self.b[k] 
         )
 
+    # Like 'discard' but insists edge be present (raises otherwise). 
     def remove(self,edge):
-        print(":: remove %s .." % str(edge))
         if self.contains(edge):
             j,k = edge
             self.a[j].remove(k)
@@ -84,6 +84,13 @@ class Matcher(object):
             self.distinct -= 1
         else:
             raise ValueError("can't remove edge %s - not present" % str(edge))
+
+    # Similar in semantics to 'set.discard' -- removes and edge if present,
+    # otherwise has no effect.
+    def discard(self,edge):
+        if self.contains(edge):
+            self.remove(edge)
+
 
     # Emits a forest of components, by (invasively) "peeling" each 
     # component from our tuple of association maps.  When there are
