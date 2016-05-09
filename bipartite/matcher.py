@@ -40,17 +40,21 @@ class Matcher(object):
     def bb(self):
         return {k:sorted(self.b[k]) for k in self.b}
 
+    def add(self,edge):
+        j,k = edge
+        self.seen.add((j,k))
+        self.a[j].add(k)
+        self.b[k].add(j)
+        self.observed += 1
+
     # Ingests an edge list for a bipartite graph  -- represented by a sequence
     # of tuples (j,k) of indices on the corresponding vertex sets A and B --
     # and projects these into two internal associatin maps (one for each
     # vertex set).
     def consume(self,edgeseq):
         self.reset()
-        for j,k in edgeseq:
-            self.seen.add((j,k))
-            self.a[j].add(k)
-            self.b[k].add(j)
-            self.observed += 1
+        for edge in edgeseq:
+            self.add(edge)
         self.distinct = len(self.seen)
         self.seen = None
         return self
