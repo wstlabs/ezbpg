@@ -27,6 +27,7 @@ g = Matcher()
 g.consume(edgeseq)
 print("Consumed %d edge observations, of which %d were distinct." % (g.observed,g.distinct))
 print("stats = ",json.dumps(g.stats(),sort_keys=True))
+print("valhist = ",json.dumps(g.valhist(),sort_keys=True))
 
 p = partition_forest(g)
 r = refine_partition(p)

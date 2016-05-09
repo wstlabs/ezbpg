@@ -1,6 +1,6 @@
 import simplejson as json
 from itertools import islice
-from collections import defaultdict, deque 
+from collections import defaultdict, deque, Counter
 
 class Matcher(object):
 
@@ -21,6 +21,13 @@ class Matcher(object):
                 'A':len(self.a),
                 'B':len(self.b)
             }
+        }
+    
+    # Returns a valence histogram for each association map. 
+    def valhist(self):
+        return {
+            'A':valhist(self.a),
+            'B':valhist(self.b)
         }
 
     # A pair of alternate accessors for our assocation maps a and b,
@@ -56,6 +63,13 @@ class Matcher(object):
     def forests(self):
         while len(self.a) or len(self.b):
             yield peel(self.a,self.b)
+
+
+
+
+# Valence histogram for a given association map
+def valhist(x):
+    return dict(Counter(len(x[i]) for i in x))
 
 
 #
