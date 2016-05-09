@@ -14,6 +14,11 @@ class Matcher(object):
         self.a = defaultdict(set) 
         self.b = defaultdict(set) 
 
+    def assoc(self,tag):
+        if tag == 'A': return self.a
+        if tag == 'B': return self.b
+        raise ValueError("invalid map descriptor")
+
     def stats(self):
         return {
             'edges': self.distinct,
@@ -59,6 +64,26 @@ class Matcher(object):
         self.seen = None
         return self
 
+    def contains(self,edge):
+        j,k = edge
+        return (
+            j in self.a and k in self.a[j] and
+            k in self.b and j in self.b[k] 
+        )
+
+    def remove(self,edge):
+        print(":: remove %s .." % str(edge))
+        if self.contains(edge):
+            j,k = edge
+            self.a[j].remove(k)
+            self.b[k].remove(j)
+            if len(self.a[j]) == 0:
+                del self.a[j]
+            if len(self.b[k]) == 0:
+                del self.b[k]
+            self.distinct -= 1
+        else:
+            raise ValueError("can't remove edge %s - not present" % str(edge))
 
     # Emits a forest of components, by (invasively) "peeling" each 
     # component from our tuple of association maps.  When there are
