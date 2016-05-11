@@ -203,7 +203,7 @@ def refine_partition(p):
     return r
 
 def edgeseq2stats(edgeseq):
-    return Matcher().consume(edgeseq).stats()
+    return Matcher(edgeseq).stats()
 
 #
 # Given a refined partition struct r, generates a nice rowset describing
