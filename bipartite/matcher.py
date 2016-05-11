@@ -92,6 +92,16 @@ class Matcher(object):
             self.remove(edge)
 
 
+    def edges(self):
+        edges = set()
+        for j in self.a:
+            for k in self.a[j]:
+                edges.add((j,k)) 
+        # for k in self.b:
+        #    for j in self.b[k]:
+        #        edges.add(j,k) 
+        return edges
+
     # Emits a forest of components, by (invasively) "peeling" each 
     # component from our tuple of association maps.  When there are
     # no more components to peel, the generator halts (and our

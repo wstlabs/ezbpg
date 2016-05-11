@@ -15,3 +15,9 @@ def purify(tupseq):
     for x,y in tupseq:
         if x is not None and y is not None: 
             yield x,y
+
+
+def save_edges(f,edgeseq):
+    for edge in edgeseq:
+        f.write("%s,%s\n" % edge)
+
