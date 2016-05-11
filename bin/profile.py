@@ -23,8 +23,7 @@ else:
     edgeseq = generate(10,8,limit=15)
 
 
-g = Matcher()
-g.consume(edgeseq)
+g = Matcher(edgeseq)
 print("Consumed %d edge observations, of which %d were distinct." % (g.observed,g.distinct))
 print("stats = ",json.dumps(g.stats(),sort_keys=True))
 print("valhist = ",json.dumps(g.valhist(),sort_keys=True))

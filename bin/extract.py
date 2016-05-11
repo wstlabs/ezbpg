@@ -11,8 +11,7 @@ args = parser.parse_args()
 
 edgeseq = purify(csviter(args.csvfile))
 
-g = Matcher()
-g.consume(edgeseq)
+g = Matcher(edgeseq)
 print("Consumed %d edge observations, of which %d were distinct." % (g.observed,g.distinct))
 print("stats = ",json.dumps(g.stats(),sort_keys=True))
 

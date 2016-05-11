@@ -4,8 +4,12 @@ from collections import defaultdict, deque, Counter
 
 class Matcher(object):
 
-    def __init__(self):
-        self.reset()
+    def __init__(self,edgeseq):
+        """
+        :param edgeseq: An iterable container of edges
+        :return: A bipartite graph
+        """
+        self.consume(edgeseq)
 
     def reset(self):
         self.seen = set() 
@@ -96,11 +100,8 @@ class Matcher(object):
         edges = set()
         for j in self.a:
             for k in self.a[j]:
-                edges.add((j,k)) 
-        # for k in self.b:
-        #    for j in self.b[k]:
-        #        edges.add(j,k) 
-        return edges
+                yield (j,k)
+        # return edges
 
     # Emits a forest of components, by (invasively) "peeling" each 
     # component from our tuple of association maps.  When there are
@@ -227,7 +228,7 @@ def describe_partition(r):
         for x in r[tag].keys():
             components = r[tag][x]
             for edgelist in components: 
-                stats = Matcher().consume(edgelist).stats()
+                stats = Matcher(edgelist).stats()
                 count['edge'] += stats['edges']
                 count['vertex-A'] += stats['vertices']['A']
                 count['vertex-B'] += stats['vertices']['B']
