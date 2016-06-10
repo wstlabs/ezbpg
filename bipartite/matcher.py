@@ -101,7 +101,6 @@ class Matcher(object):
         for j in self.a:
             for k in self.a[j]:
                 yield (j,k)
-        # return edges
 
     # Emits a forest of components, by (invasively) "peeling" each 
     # component from our tuple of association maps.  When there are
@@ -242,4 +241,3 @@ def describe_partition(r):
 def innersum(sequence):
    return sum(len(x) for x in sequence)
 
-#1234567890123456789012345678901234567890123456789012345678901234567890123456789
