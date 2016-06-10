@@ -2,6 +2,10 @@ import simplejson as json
 from itertools import islice
 from collections import defaultdict, deque, Counter
 
+# The 'Matcher' class is really for the actual graph container object 
+# itself.  It's just called that because it used to be thought of as more 
+# of a 'matching algorithm', initially, before morphing into a proper 
+# container object.
 class Matcher(object):
 
     def __init__(self,edgeseq):
