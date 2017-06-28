@@ -22,7 +22,7 @@ print(tabulate(rows,headers="firstrow"))
 
 print("Making for %d components total." % total['component'])
 for tag in sorted(r.keys()):
-    print("class[%s] = %s" % (tag,{x:len(r[tag][x]) for x in r[tag]})) 
+    print("class[%s] = %s" % (tag,{x:len(r[tag][x]) for x in r[tag]}))
 
 
 tag = 'm-n'
@@ -41,8 +41,4 @@ for t in sorted(r[tag].keys()):
         with open(outpath,"wt") as f:
             save_edges(f,edgelist)
 
-    # for i,y in enumerate(components):
-    #    print("component[%d] = %s" % (i,y))
-
-sys.exit(1)
 

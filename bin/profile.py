@@ -2,7 +2,7 @@
 import sys, argparse
 import simplejson as json
 from tabulate import tabulate
-from bipartite.random  import generate 
+from bipartite.random  import generate
 from bipartite.utils   import csviter, purify
 from bipartite.matcher import Matcher, partition_forest, refine_partition, describe_partition
 
@@ -14,12 +14,12 @@ args = parser.parse_args()
 if args.csvfile:
     edgeseq = purify(csviter(args.csvfile))
 elif args.random:
-    argv = args.random.split(',') 
+    argv = args.random.split(',')
     if len(argv) < 3:
         raise ValueError("need exactly 3 comma-separated paramters")
     m,n,r = tuple(int(t) for t in argv)
     edgeseq = generate(m,n,limit=r)
-else: 
+else:
     edgeseq = generate(10,8,limit=15)
 
 
@@ -35,21 +35,12 @@ print(tabulate(rows,headers="firstrow"))
 
 print("Making for %d components total." % total['component'])
 for tag in sorted(r.keys()):
-    print("class[%s] = %s" % (tag,{x:len(r[tag][x]) for x in r[tag]})) 
+    print("class[%s] = %s" % (tag,{x:len(r[tag][x]) for x in r[tag]}))
 
-
-#
-# r = dict->dict->list[tuple(int,int)]
-# r[category-tag][component-class]
-#
 
 tag = 'm-n'
 print("tag '%s' has %d component class(es)." % (tag,len(r[tag])))
 for x in sorted(r[tag].keys()):
     components = r[tag][x]
     print ("class[%s] = has %d component(s):" % (x,len(components)))
-    # for i,y in enumerate(components):
-    #    print("component[%d] = %s" % (i,y))
-
-sys.exit(1)
 
