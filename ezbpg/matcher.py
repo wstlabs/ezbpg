@@ -16,11 +16,11 @@ class Matcher(object):
         self.consume(edgeseq)
 
     def reset(self):
-        self.seen = set() 
-        self.distinct = 0 
-        self.observed = 0 
-        self.a = defaultdict(set) 
-        self.b = defaultdict(set) 
+        self.seen = set()
+        self.distinct = 0
+        self.observed = 0
+        self.a = defaultdict(set)
+        self.b = defaultdict(set)
 
     def assoc(self,tag):
         if tag == 'A': return self.a
@@ -35,7 +35,7 @@ class Matcher(object):
                 'B':len(self.b)
             }
         }
-    
+
     # Returns a valence histogram for each association map. 
     def valhist(self):
         return {
@@ -76,7 +76,7 @@ class Matcher(object):
         j,k = edge
         return (
             j in self.a and k in self.a[j] and
-            k in self.b and j in self.b[k] 
+            k in self.b and j in self.b[k]
         )
 
     # Like 'discard' but insists edge be present (raises otherwise). 
@@ -199,10 +199,10 @@ def refine_partition(p):
     r = defaultdict(dict)
     for nj,nk in sorted(p.keys()):
         tag = simplify(nj,nk)
-        r[tag][(nj,nk)] = p[(nj,nk)] 
+        r[tag][(nj,nk)] = p[(nj,nk)]
     for k in tags:
-        if k not in r: 
-            r[k] = {} 
+        if k not in r:
+            r[k] = {}
     return r
 
 def edgeseq2stats(edgeseq):
@@ -227,19 +227,19 @@ def describe_partition(r):
         count = defaultdict(int)
         compclasses = r[tag]
         count['class'] = len(compclasses)
-        count['component'] = sum(len(r[tag][x]) for x in r[tag]) 
+        count['component'] = sum(len(r[tag][x]) for x in r[tag])
         for x in r[tag].keys():
             components = r[tag][x]
-            for edgelist in components: 
+            for edgelist in components:
                 stats = Matcher(edgelist).stats()
                 count['edge'] += stats['edges']
                 count['vertex-A'] += stats['vertices']['A']
                 count['vertex-B'] += stats['vertices']['B']
-        rows.append([longform[tag]] + [count[k] for k in headerkeys]) 
-        for k in headerkeys: 
-            total[k] += count[k] 
+        rows.append([longform[tag]] + [count[k] for k in headerkeys])
+        for k in headerkeys:
+            total[k] += count[k]
         total['class'] += len(compclasses)
-    rows.append(["total"] + [total[k] for k in headerkeys]) 
+    rows.append(["total"] + [total[k] for k in headerkeys])
     return rows,total
 
 def innersum(sequence):
