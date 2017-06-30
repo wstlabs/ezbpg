@@ -1,4 +1,3 @@
-import codecs
 
 def cleaniter(filename,encoding):
     with codecs.open(filename,"r",encoding) as f:
@@ -13,7 +12,7 @@ def csviter(filename,encoding=None):
 
 def purify(tupseq):
     for x,y in tupseq:
-        if x is not None and y is not None: 
+        if x is not None and y is not None:
             yield x,y
 
 
