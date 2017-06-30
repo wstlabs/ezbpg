@@ -2,7 +2,7 @@ import os, sys, argparse
 import simplejson as json
 from tabulate import tabulate
 import ezbpg
-from ezbpg.utils   import save_edges
+import ezbpg.ioutil as ioutil
 from ezbpg.matcher import partition_forest, refine_partition, describe_partition
 
 def parse_args():
@@ -41,7 +41,7 @@ def extract(outdir,tag,r):
             outpath = "%s/%s" % (subdir,basefile)
             print("%s .." % outpath)
             with open(outpath,"wt") as f:
-                save_edges(f,edgelist)
+                ioutil.save_edges(f,edgelist)
 
 def main():
     args = parse_args()
