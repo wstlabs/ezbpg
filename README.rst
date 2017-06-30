@@ -1,6 +1,21 @@
 What's in here?
 ---------------
 
+This repo provides a simple Python class (``ezbpg.BipartiteGraph``) for representing simple (unweighted) Bipartite Graphs, and for answering a few basic questions about their properties.  It doesn't handle other kinds of graphs, it doesn't scale to petabytes or tie directly to a graph database, and it doesn't do any fancy algorithms.  The focus is on simplicity (it has no dependencies outside of the standard library) and ease of use while aiming to stay reasonably performant. 
+
+Sample usage might go like this:
+
+    import ezbpg
+    from tabulate import tabulate
+
+    g = ezbpg.slurp(filepath)    # slurp a Graph from a CSV
+    p = g.partition()            # obtain a structured partition
+    rows,total = p.describe()
+
+
+More Background
+---------------
+
 Bipartite graphs frequently emerge in situations where we aren't necessarily looking them -- for example, any pair of integer sequences (of the same length) determines a bipartite graph.  Under more natural circumstances, database columns (particularly columns representing keys or partial keys) can sometimes be better understood in terms of bipartite relations.  
 
 This repo provides a few simple algorithms for generating basic summary statistics on bipartite graphs, so as to help determine their basic character, or "shape."  The first of these partitions a bipartite graph (given its edge sequences) into categories of forests that are stricly 1-1, 1-to-many, many-to-1, and many-to-many, and provides some basic tabulations for each category.  Other summary functions are in the works (for example, to help identify densely connected components within larger but more sparsely connected graphs). 
