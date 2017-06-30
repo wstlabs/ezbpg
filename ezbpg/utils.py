@@ -1,6 +1,6 @@
 
 def cleaniter(path,encoding='utf-8'):
-    with open(path,"rtU",encoding) as f:
+    with open(path,"rtU",encoding=encoding) as f:
         for line in f:
             clean = line.rstrip()
             if len(clean):
