@@ -1,13 +1,13 @@
 
-def cleaniter(filename,encoding):
-    with open(filename,"rtU",encoding) as f:
+def cleaniter(path,encoding):
+    with open(path,"rtU",encoding) as f:
         for line in f:
             clean = line.rstrip()
             if len(clean):
                 yield clean
 
-def csviter(filename,encoding=None):
-    for line in cleaniter(filename,encoding):
+def csviter(path,encoding=None):
+    for line in cleaniter(path,encoding):
         yield tuple(line.rstrip().split(','))
 
 def purify(tupseq):
