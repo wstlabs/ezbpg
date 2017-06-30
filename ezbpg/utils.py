@@ -1,6 +1,6 @@
 
 def cleaniter(filename,encoding):
-    with codecs.open(filename,"r",encoding) as f:
+    with open(filename,"rtU",encoding) as f:
         for line in f:
             clean = line.rstrip()
             if len(clean):
