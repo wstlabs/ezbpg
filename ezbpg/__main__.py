@@ -1,13 +1,13 @@
-#!/usr/bin/env python
 import os, sys, argparse
 import simplejson as json
 from tabulate import tabulate
-from bipartite.utils   import csviter, purify, save_edges
-from bipartite.matcher import Matcher, partition_forest, refine_partition, describe_partition
+from ezbpg.utils   import csviter, purify, save_edges
+from ezbpg.matcher import Matcher, partition_forest, refine_partition, describe_partition
 
-parser = argparse.ArgumentParser()
-parser.add_argument("--csvfile", help="csv file to parse", required=True)
-args = parser.parse_args()
+def parse_args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--csvfile", help="csv file to parse", required=True)
+    return parser.parse_args()
 
 edgeseq = purify(csviter(args.csvfile))
 
@@ -40,5 +40,12 @@ for t in sorted(r[tag].keys()):
         print("%s .." % outpath)
         with open(outpath,"wt") as f:
             save_edges(f,edgelist)
+
+def main():
+    args = parse_args()
+
+if __name__ == '__main__':
+    main()
+
 
 
