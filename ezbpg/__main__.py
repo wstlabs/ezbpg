@@ -7,12 +7,12 @@ from ezbpg.matcher import partition_forest, refine_partition, describe_partition
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--csvfile", help="csv file to parse", required=True)
+    parser.add_argument("--infile", help="csv file to parse", required=True)
     return parser.parse_args()
 
-# edgeseq = purify(csviter(args.csvfile))
+# edgeseq = purify(csviter(args.infile))
 # g = Matcher(edgeseq)
-g = ezbpg.slurp(args.csvfile)
+g = ezbpg.slurp(args.infile)
 print("Consumed %d edge observations, of which %d were distinct." % (g.observed,g.distinct))
 print("stats = ",json.dumps(g.stats(),sort_keys=True))
 
