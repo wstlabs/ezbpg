@@ -1,12 +1,12 @@
 
-def cleaniter(path,encoding):
+def cleaniter(path,encoding='utf-8'):
     with open(path,"rtU",encoding) as f:
         for line in f:
             clean = line.rstrip()
             if len(clean):
                 yield clean
 
-def csviter(path,encoding=None):
+def csviter(path,encoding='utf-8'):
     for line in cleaniter(path,encoding):
         yield tuple(line.rstrip().split(','))
 
