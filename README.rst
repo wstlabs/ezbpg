@@ -5,6 +5,8 @@ This repo provides a simple Python class (``ezbpg.BipartiteGraph``) for represen
 
 Sample usage might go like this:
 
+.. code:: python
+
     import ezbpg
     from tabulate import tabulate
 
