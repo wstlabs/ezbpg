@@ -10,6 +10,7 @@ from ezbpg.matcher import partition_forest, refine_partition, describe_partition
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("--infile", help="csv file to parse", required=True)
+    parser.add_argument("--stroll", help="stroll", action="store_true")
     parser.add_argument("--walk", help="walk", action="store_true")
     parser.add_argument("--dump", help="dump", action="store_true")
     return parser.parse_args()
@@ -31,7 +32,16 @@ def process(g):
     #     print("class[%s] = %s" % (tag,{x:len(r[tag][x]) for x in r[tag]}))
     return r
 
+
 def walk(r,clone=False):
+    """Performs an ordered traversal of a refined partition :r, yielding a seguence
+    of OrderedDict structs keyed on the fields ('cat','dims','seq','edges'), where each
+    dict corresponds to a component in our forest.  [Need to explain these fields].
+
+    If an optional :clone flag is provided, we clone (deepcopy) the edge list on
+    the way out.  (Which is safer, because otherwise our edgelists would be members
+    embedded in our partition struct somewhere, but at performance cost of course).
+    """
     for k,category in r.items():
         for t in sorted(category.keys()):
             for i,edges in enumerate(category[t]):
@@ -39,6 +49,7 @@ def walk(r,clone=False):
                     edges = copy.deepcopy(edges)
                 items = [('cat',k),('dims',t),('seq',i+1),('edges',edges)]
                 yield OrderedDict(items)
+
 
 def dumpall(outdir,tag,r):
     category = r[tag]
@@ -72,9 +83,16 @@ def main():
         for tag in tags:
             dumpall(outdir,tag,r)
 
-    if args.walk:
+    if args.stroll:
         for r in walk(r,clone=True):
+            # We can -almost- just print our dicts as-is, except for the possibly
+            # very long edge lists.  So we make a quick substitution:
+            edges = r['edges']
+            n = len(edges)
+            _pl = 's' if n > 1 else ''
+            r['edges'] = "[%d edge%s]" % (n,_pl)
             print(r)
+
     print("done")
 
 if __name__ == '__main__':
