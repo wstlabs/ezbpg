@@ -14,6 +14,27 @@ Sample usage might go like this:
     p = g.partition()            # obtain a structured partition
     rows,total = p.describe()
 
+Or if you run the profiling/extracting tool on one of our sample data files
+you might see output like this:
+
+.. code:: 
+
+  python -m ezbpg --infile=data/declare.csv 
+  Consumed 511496 edge observations, of which 510378 were distinct.
+                  classes    components    edges    vertices(A)    vertices(B)
+  ------------  ---------  ------------  -------  -------------  -------------
+  1-to-1                1          3516     3516           3516           3516
+  1-to-many            14           681     1711            681           1711
+  many-to-1           179          6434    97369          97369           6434
+  many-to-many        868          3610   407782         168313          12539
+  total              2124         14241   510378         269879          24200
+  Making for 14241 components total.
+  extracting category '1-1' with 1 component class ..
+  extracting category '1-n' with 14 component classes ..
+  extracting category 'm-1' with 179 component classes ..
+  extracting category 'm-n' with 868 component classes ..
+  done
+
 
 More Background
 ---------------
@@ -35,3 +56,4 @@ Status
 ------
 
 The core algorithm seems to be quite solid; it just needs packaging (and perhaps a proper test suite). 
+
