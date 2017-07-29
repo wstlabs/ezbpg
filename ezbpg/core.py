@@ -109,7 +109,7 @@ class BipartiteGraph(object):
     # component from our tuple of association maps.  When there are
     # no more components to peel, the generator halts (and our
     # association maps will be empty).
-    def forests(self):
+    def forest(self):
         while len(self.a) or len(self.b):
             yield peel(self.a,self.b)
 
@@ -180,7 +180,7 @@ def classify(edgeseq):
 
 def partition_forest(g,sort=True):
     p = defaultdict(list)
-    for edgelist in g.forests():
+    for edgelist in g.forest():
         if (sort):
             edgelist = sorted(edgelist)
         nj,nk = classify(edgelist)
