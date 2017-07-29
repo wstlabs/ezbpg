@@ -1,5 +1,7 @@
+import copy
 import os, sys, argparse
 import simplejson as json
+from collections import OrderedDict
 from tabulate import tabulate
 import ezbpg
 import ezbpg.ioutil as ioutil
@@ -8,7 +10,7 @@ from ezbpg.matcher import partition_forest, refine_partition, describe_partition
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("--infile", help="csv file to parse", required=True)
-    parser.add_argument("--extract", help="extract", action="store_true")
+    parser.add_argument("--walk", help="walk", action="store_true")
     parser.add_argument("--dump", help="dump", action="store_true")
     return parser.parse_args()
 
@@ -29,14 +31,14 @@ def process(g):
     #     print("class[%s] = %s" % (tag,{x:len(r[tag][x]) for x in r[tag]}))
     return r
 
-def walk(r):
+def walk(r,clone=False):
     for k,category in r.items():
         for t in sorted(category.keys()):
-            nj,nk = t
-            components = category[t]
-            for i,edgelist in enumerate(components):
-                for a,b in edgelist:
-                    yield None
+            for i,edges in enumerate(category[t]):
+                if clone:
+                    edges = copy.deepcopy(edges)
+                items = [('cat',k),('dims',t),('seq',i+1),('edges',edges)]
+                yield OrderedDict(items)
 
 def dumpall(outdir,tag,r):
     category = r[tag]
@@ -70,6 +72,9 @@ def main():
         for tag in tags:
             dumpall(outdir,tag,r)
 
+    if args.walk:
+        for r in walk(r,clone=True):
+            print(r)
     print("done")
 
 if __name__ == '__main__':
