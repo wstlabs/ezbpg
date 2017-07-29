@@ -5,7 +5,7 @@ from collections import OrderedDict
 from tabulate import tabulate
 import ezbpg
 import ezbpg.ioutil as ioutil
-from ezbpg.matcher import partition_forest, refine_partition, describe_partition
+from ezbpg.core import partition_forest, refine_partition, describe_partition
 
 def parse_args():
     parser = argparse.ArgumentParser()

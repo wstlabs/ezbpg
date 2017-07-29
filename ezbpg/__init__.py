@@ -1,5 +1,5 @@
 from ezbpg.ioutil import purify, csviter
-from ezbpg.matcher import Matcher
+from ezbpg.core import Matcher
 
 def ingest(edgeseq):
     return Matcher(edgeseq)
