@@ -8,6 +8,8 @@ from ezbpg.matcher import partition_forest, refine_partition, describe_partition
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("--infile", help="csv file to parse", required=True)
+    parser.add_argument("--extract", help="extract", action="store_true")
+    parser.add_argument("--dump", help="dump", action="store_true")
     return parser.parse_args()
 
 def mkdir_soft(dirpath):
@@ -27,7 +29,7 @@ def process(g):
     #     print("class[%s] = %s" % (tag,{x:len(r[tag][x]) for x in r[tag]}))
     return r
 
-def extract(outdir,tag,r):
+def dumpall(outdir,tag,r):
     category = r[tag]
     subdir = "%s/%s" % (outdir,tag);
     mkdir_soft(outdir)
@@ -54,9 +56,11 @@ def main():
     r = process(g)
 
     outdir = 'comp'
-    tags = sorted(r.keys())
-    for tag in tags:
-        extract(outdir,tag,r)
+    if args.dump:
+        tags = sorted(r.keys())
+        for tag in tags:
+            dumpall(outdir,tag,r)
+
     print("done")
 
 if __name__ == '__main__':
