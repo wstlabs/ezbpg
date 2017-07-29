@@ -1,7 +1,12 @@
 What's in here?
 ---------------
 
-This repo provides a simple Python class (``ezbpg.BipartiteGraph``) for representing simple (unweighted) Bipartite Graphs, and for answering a few basic questions about their properties.  It doesn't handle other kinds of graphs, it doesn't scale to petabytes or tie directly to a graph database, and it doesn't do any fancy algorithms.  The focus is on simplicity (it has no dependencies outside of the standard library) and ease of use while aiming to stay reasonably performant. 
+This repo provides a simple Python class (``ezbpg.BipartiteGraph``) for representing simple (unweighted) Bipartite Graphs, and for answering a few basic questions about their properties.  It doesn't handle other kinds of graphs, it doesn't scale to petabytes or tie directly to a graph database, and it doesn't do any fancy algorithms.  The focus is on simplicity (it has no dependencies outside of the standard library) and ease of use while aiming to stay reasonably performant.
+
+The ideal use case is when you have an edge list, and you want to get a quick sense of the "shape" of the space of assocations this edge list describes, in terms of basic decriptives stats like:
+- the number of vertices / distinct edges 
+- how many components your forest has;  
+- the number of components in each category (1-1,1-n,m-1,m-n) 
 
 Sample usage might go like this:
 
