@@ -29,6 +29,15 @@ def process(g):
     #     print("class[%s] = %s" % (tag,{x:len(r[tag][x]) for x in r[tag]}))
     return r
 
+def walk(r):
+    for k,category in r.items():
+        for t in sorted(category.keys()):
+            nj,nk = t
+            components = category[t]
+            for i,edgelist in enumerate(components):
+                for a,b in edgelist:
+                    yield None
+
 def dumpall(outdir,tag,r):
     category = r[tag]
     subdir = "%s/%s" % (outdir,tag);
