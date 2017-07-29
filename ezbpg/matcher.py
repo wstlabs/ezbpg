@@ -148,7 +148,7 @@ def peel(x,y):
         if len(jj):
             j = jj.popleft()
             if j in x:
-                nodes = x.pop(j) 
+                nodes = x.pop(j)
                 for k in nodes:
                     if (j,k) not in edgelist:
                         edgelist.append((j,k))
@@ -156,7 +156,7 @@ def peel(x,y):
         elif len(kk):
             k = kk.popleft()
             if k in y:
-                nodes = y.pop(k) 
+                nodes = y.pop(k)
                 for j in nodes:
                     if (j,k) not in edgelist:
                         edgelist.append((j,k))
@@ -177,7 +177,7 @@ def vertexset(edgeseq):
 # each respective vertex set.  
 def classify(edgeseq):
     jj,kk = vertexset(edgeseq)
-    return len(jj),len(kk) 
+    return len(jj),len(kk)
 
 def partition_forest(g):
     p = defaultdict(list)
