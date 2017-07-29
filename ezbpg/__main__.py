@@ -4,7 +4,6 @@ import simplejson as json
 from collections import OrderedDict
 from tabulate import tabulate
 import ezbpg
-import ezbpg.ioutil as ioutil
 from ezbpg.core import partition_forest, refine_partition, describe_partition
 
 def parse_args():
@@ -67,7 +66,7 @@ def dumpall(outdir,tag,r):
             outpath = "%s/%s" % (subdir,basefile)
             # print("%s .." % outpath)
             with open(outpath,"wt") as f:
-                ioutil.save_edges(f,edgelist)
+                ezbpg.ioutil.save_edges(f,edgelist)
 
 def main():
     args = parse_args()
