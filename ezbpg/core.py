@@ -121,48 +121,6 @@ def valhist(x):
     return dict(Counter(len(x[i]) for i in x))
 
 
-#
-# "Peels" a semi-random cluster from the adjacency maps x and y,
-# starting at a "random-ish" node chosen from map x (which won't be 
-# truly random; but rather will simply be the first key emited that 
-# map's underlying dict struct).
-#
-# This it does by simply walking back and forth between the respective 
-# association maps, and traversing the connected component identified 
-# by our starting node.  As it does so, it invavisely plucks ("peels") 
-# both nodes and edges of the component it traverses from the given 
-# associaton maps.
-#
-# Note that while this operation is order-dependent, it can be applied 
-# in either direction to the association maps on our Matcher struct.
-#
-def peel(x,y):
-    if not len(x) and len(y):
-        return None
-    edgelist = []
-    jj = deque(islice(x.keys(),0,1))
-    kk = deque()
-    hungry = True
-    while hungry:
-        if len(jj):
-            j = jj.popleft()
-            if j in x:
-                nodes = x.pop(j)
-                for k in nodes:
-                    if (j,k) not in edgelist:
-                        edgelist.append((j,k))
-                    kk.append(k)
-        elif len(kk):
-            k = kk.popleft()
-            if k in y:
-                nodes = y.pop(k)
-                for j in nodes:
-                    if (j,k) not in edgelist:
-                        edgelist.append((j,k))
-                    jj.append(j)
-        else:
-            hungry = False
-    return edgelist
 
 # Projects an edge sequence onto its two respective vertex sets. 
 def vertexset(edgeseq):
@@ -242,4 +200,52 @@ def describe_partition(r):
 
 def innersum(sequence):
    return sum(len(x) for x in sequence)
+
+
+
+
+
+
+#
+# "Peels" a semi-random cluster from the adjacency maps x and y,
+# starting at a "random-ish" node chosen from map x (which won't be 
+# truly random; but rather will simply be the first key emited that 
+# map's underlying dict struct).
+#
+# This it does by simply walking back and forth between the respective 
+# association maps, and traversing the connected component identified 
+# by our starting node.  As it does so, it invavisely plucks ("peels") 
+# both nodes and edges of the component it traverses from the given 
+# associaton maps.
+#
+# Note that while this operation is order-dependent, it can be applied 
+# in either direction to the association maps on our Matcher struct.
+#
+def peel(x,y):
+    if not len(x) and len(y):
+        return None
+    edgelist = []
+    jj = deque(islice(x.keys(),0,1))
+    kk = deque()
+    hungry = True
+    while hungry:
+        if len(jj):
+            j = jj.popleft()
+            if j in x:
+                nodes = x.pop(j)
+                for k in nodes:
+                    if (j,k) not in edgelist:
+                        edgelist.append((j,k))
+                    kk.append(k)
+        elif len(kk):
+            k = kk.popleft()
+            if k in y:
+                nodes = y.pop(k)
+                for j in nodes:
+                    if (j,k) not in edgelist:
+                        edgelist.append((j,k))
+                    jj.append(j)
+        else:
+            hungry = False
+    return edgelist
 
