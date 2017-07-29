@@ -1,8 +1,8 @@
 from ezbpg.ioutil import purify, csviter
-from ezbpg.core import Matcher
+from ezbpg.core import BipartiteGraph
 
 def ingest(edgeseq):
-    return Matcher(edgeseq)
+    return BipartiteGraph(edgeseq)
 
 def slurp(path):
     edgeseq = purify(csviter(path))

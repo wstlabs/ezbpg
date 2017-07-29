@@ -2,11 +2,10 @@ import simplejson as json
 from itertools import islice
 from collections import OrderedDict, defaultdict, deque, Counter
 
-# The 'Matcher' class is really for the actual graph container object 
-# itself.  It's just called that because it used to be thought of as more 
-# of a 'matching algorithm', initially, before morphing into a proper 
-# container object.
-class Matcher(object):
+class BipartiteGraph(object):
+    """
+    A simple representation of a BipartiteGraph.
+    """
 
     def __init__(self,edgeseq):
         """
@@ -205,7 +204,7 @@ def refine_partition(p):
     return r
 
 def edgeseq2stats(edgeseq):
-    return Matcher(edgeseq).stats()
+    return BipartiteGraph(edgeseq).stats()
 
 #
 # Given a refined partition struct r, generates a nice rowset describing
@@ -230,7 +229,7 @@ def describe_partition(r):
         for x in r[tag].keys():
             components = r[tag][x]
             for edgelist in components:
-                stats = Matcher(edgelist).stats()
+                stats = BipartiteGraph(edgelist).stats()
                 count['edge'] += stats['edges']
                 count['vertex-A'] += stats['vertices']['A']
                 count['vertex-B'] += stats['vertices']['B']
