@@ -14,32 +14,34 @@ def mkdir_soft(dirpath):
     if not os.path.exists(dirpath):
         os.mkdir(dirpath)
 
-# edgeseq = purify(csviter(args.infile))
-# g = Matcher(edgeseq)
-def refine(g):
+def process(g):
+    """
+    Partitions and refines our graph :g, and prints some nice stats about it.
+    """
     p = partition_forest(g)
     r = refine_partition(p)
     rows,total = describe_partition(r)
     print(tabulate(rows,headers="firstrow"))
-
     print("Making for %d components total." % total['component'])
-    for tag in sorted(r.keys()):
-        print("class[%s] = %s" % (tag,{x:len(r[tag][x]) for x in r[tag]}))
+    # for tag in sorted(r.keys()):
+    #     print("class[%s] = %s" % (tag,{x:len(r[tag][x]) for x in r[tag]}))
     return r
 
 def extract(outdir,tag,r):
+    category = r[tag]
+    subdir = "%s/%s" % (outdir,tag);
     mkdir_soft(outdir)
-    subdir = "comp/%s" % tag
     mkdir_soft(subdir)
-    print("tag '%s' has %d component class(es)." % (tag,len(r[tag])))
-    for t in sorted(r[tag].keys()):
+    _pl = 'es' if len(category) > 1 else '';
+    print("extracting category '%s' with %d component class%s .." % (tag,len(category),_pl))
+    for t in sorted(category.keys()):
         nj,nk = t
-        components = r[tag][t]
-        print ("class[%s] = has %d component(s):" % (t,len(components)))
+        components = category[t]
+        # print ("class[%s] = has %d component(s):" % (t,len(components)))
         for i,edgelist in enumerate(components):
             basefile = "%d,%d-%d.txt" % (nj,nk,i)
             outpath = "%s/%s" % (subdir,basefile)
-            print("%s .." % outpath)
+            # print("%s .." % outpath)
             with open(outpath,"wt") as f:
                 ioutil.save_edges(f,edgelist)
 
@@ -48,12 +50,14 @@ def main():
 
     g = ezbpg.slurp(args.infile)
     print("Consumed %d edge observations, of which %d were distinct." % (g.observed,g.distinct))
-    print("stats = ",json.dumps(g.stats(),sort_keys=True))
-    r = refine(g)
+    # print("stats = ",json.dumps(g.stats(),sort_keys=True))
+    r = process(g)
 
-    tag = 'm-n'
     outdir = 'comp'
-    extract(outdir,tag,r)
+    tags = sorted(r.keys())
+    for tag in tags:
+        extract(outdir,tag,r)
+    print("done")
 
 if __name__ == '__main__':
     main()
