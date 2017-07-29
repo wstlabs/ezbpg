@@ -1,6 +1,6 @@
 import simplejson as json
 from itertools import islice
-from collections import defaultdict, deque, Counter
+from collections import OrderedDict, defaultdict, deque, Counter
 
 # The 'Matcher' class is really for the actual graph container object 
 # itself.  It's just called that because it used to be thought of as more 
@@ -198,13 +198,10 @@ def simplify(nj,nk):
 
 def refine_partition(p):
     tags = ('1-1','1-n','m-1','m-n')
-    r = defaultdict(dict)
+    r = OrderedDict((_,{}) for _ in tags)
     for nj,nk in sorted(p.keys()):
         tag = simplify(nj,nk)
         r[tag][(nj,nk)] = p[(nj,nk)]
-    for k in tags:
-        if k not in r:
-            r[k] = {}
     return r
 
 def edgeseq2stats(edgeseq):
