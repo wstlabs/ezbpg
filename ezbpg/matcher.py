@@ -179,9 +179,11 @@ def classify(edgeseq):
     jj,kk = vertexset(edgeseq)
     return len(jj),len(kk)
 
-def partition_forest(g):
+def partition_forest(g,sort=True):
     p = defaultdict(list)
     for edgelist in g.forests():
+        if (sort):
+            edgelist = sorted(edgelist)
         nj,nk = classify(edgelist)
         p[(nj,nk)].append(edgelist)
     return p
