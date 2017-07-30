@@ -47,6 +47,22 @@ def dumpfor(outdir,tag,category):
             with open(outpath,"wt") as f:
                 ezbpg.ioutil.save_edges(f,edgelist)
 
+def dumpall(outdir,r):
+    mkdir_soft(outdir)
+    for tag,category in r.walk2():
+        print("extracting category '%s' .." % tag)
+        subdir = "%s/%s" % (outdir,tag);
+        mkdir_soft(subdir)
+        for r in category:
+            nj,nk = r['dims']
+            i,g = r['seq'],r['graph']
+            basefile = "%d,%d-%d.csv" % (nj,nk,i)
+            outpath = "%s/%s" % (subdir,basefile)
+            # print("%s .." % outpath)
+            edgelist = sorted(g.edges())
+            with open(outpath,"wt") as f:
+                ezbpg.ioutil.save_edges(f,edgelist)
+
 def flatten(d):
     """
     Clobbers the 'graph' element of our dict with its stringified version,
@@ -76,8 +92,9 @@ def main():
 
     outdir = 'comp'
     if args.dump:
-        for tag,category in r:
-            dumpfor(outdir,tag,category)
+        dumpall(outdir,r)
+        # for tag,category in r:
+        #    dumpfor(outdir,tag,category)
 
     if args.stroll:
         for d in stroll(r):
