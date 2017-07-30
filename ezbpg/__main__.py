@@ -29,24 +29,6 @@ def process(g):
     print("Making for %d components total." % total['component'])
     return r
 
-def dumpfor(outdir,tag,category):
-    subdir = "%s/%s" % (outdir,tag);
-    mkdir_soft(outdir)
-    mkdir_soft(subdir)
-    _pl = 'es' if len(category) > 1 else '';
-    print("extracting category '%s' with %d component class%s .." % (tag,len(category),_pl))
-    for t in sorted(category.keys()):
-        nj,nk = t
-        components = category[t]
-        # print ("class[%s] = has %d component(s):" % (t,len(components)))
-        for i,g in enumerate(components):
-            basefile = "%d,%d-%d.txt" % (nj,nk,i)
-            outpath = "%s/%s" % (subdir,basefile)
-            # print("%s .." % outpath)
-            edgelist = sorted(g.edges())
-            with open(outpath,"wt") as f:
-                ezbpg.ioutil.save_edges(f,edgelist)
-
 def dumpall(outdir,r):
     mkdir_soft(outdir)
     for tag,category in r.walk2():
@@ -126,4 +108,23 @@ def __walk(r):
             for i,edges in enumerate(category[t]):
                 items = [('cat',k),('dims',t),('seq',i+1),('edges',edges)]
                 yield OrderedDict(items)
+
+def __dumpfor(outdir,tag,category):
+    subdir = "%s/%s" % (outdir,tag);
+    mkdir_soft(outdir)
+    mkdir_soft(subdir)
+    _pl = 'es' if len(category) > 1 else '';
+    print("extracting category '%s' with %d component class%s .." % (tag,len(category),_pl))
+    for t in sorted(category.keys()):
+        nj,nk = t
+        components = category[t]
+        # print ("class[%s] = has %d component(s):" % (t,len(components)))
+        for i,g in enumerate(components):
+            basefile = "%d,%d-%d.txt" % (nj,nk,i)
+            outpath = "%s/%s" % (subdir,basefile)
+            # print("%s .." % outpath)
+            edgelist = sorted(g.edges())
+            with open(outpath,"wt") as f:
+                ezbpg.ioutil.save_edges(f,edgelist)
+
 
