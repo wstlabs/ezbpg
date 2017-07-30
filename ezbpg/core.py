@@ -209,9 +209,15 @@ class RefinedPartition(object):
                     yield OrderedDict(items)
 
     def walk2(self):
-        """An alternate traversal that's simply a group-by of the walk() traversal 
-        on category tag."""
-        pass
+        """An alternate traversal that's simply a group-by of the walk() traversal
+        on the category tag, but with the child dicts correspondingly shortened."""
+        for cat,reciter in groupby(self.walk(),lambda d:d['cat']):
+            yield cat,(pluck(r,'cat') for r in reciter)
+
+
+def pluck(r,k):
+    del r[k]
+    return r
 
 def refined_partition(p):
     """

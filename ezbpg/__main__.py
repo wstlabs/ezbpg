@@ -10,6 +10,7 @@ def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("--infile", help="csv file to parse", required=True)
     parser.add_argument("--stroll", help="stroll", action="store_true")
+    parser.add_argument("--stroll2", help="stroll2", action="store_true")
     parser.add_argument("--walk", help="walk", action="store_true")
     parser.add_argument("--dump", help="dump", action="store_true")
     return parser.parse_args()
@@ -46,20 +47,25 @@ def dumpfor(outdir,tag,category):
             with open(outpath,"wt") as f:
                 ezbpg.ioutil.save_edges(f,edgelist)
 
-def dumpall(outdir,r):
-    for tag,catiter in r.walk2():
-        pass
+def flatten(d):
+    """
+    Clobbers the 'graph' element of our dict with its stringified version,
+    to make the dict itself printable.
+    """
+    g = d['graph']
+    d['graph'] = str(g)
+    return d
+
+def stroll_over(r):
+    for tag,category in r.walk2():
+        print("tag = %s .." % tag)
+        for r in category:
+            d = flatten(r)
+            print(r)
 
 def stroll(r):
     for d in r.walk():
-        # We can -almost- just print our dicts as-is, except for the possibly
-        # very long edge lists.  So we make a quick substitution:
-        # n = len(d['graph'])
-        # _pl = 's' if n > 1 else ''
-        # d['graph'] = "[%d edge%s]" % (n,_pl)
-        g = d['graph']
-        d['graph'] = str(g)
-        yield d
+        yield flatten(d)
 
 def main():
     args = parse_args()
@@ -76,6 +82,9 @@ def main():
     if args.stroll:
         for d in stroll(r):
             print(d)
+
+    if args.stroll2:
+        stroll_over(r)
 
     print("done")
 
