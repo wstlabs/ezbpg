@@ -131,6 +131,12 @@ class BipartiteGraph(object):
 
 
 class Partition(object):
+    """
+    A simple container representing a special partition of BipartiteGraph structs
+    represented as a dict-of-list structs, where the keys in the dicts are dimension
+    tuples (e.g. (1,1), (1,3), (3,2), ...) and the values are lists of components
+    having those dimensions. 
+    """
 
     def __init__(self,g):
         """
