@@ -29,7 +29,7 @@ def process(g):
     return r
 
 
-def dumpall(outdir,tag,category):
+def dumpfor(outdir,tag,category):
     subdir = "%s/%s" % (outdir,tag);
     mkdir_soft(outdir)
     mkdir_soft(subdir)
@@ -67,7 +67,7 @@ def main():
     outdir = 'comp'
     if args.dump:
         for tag,category in r:
-            dumpall(outdir,tag,category)
+            dumpfor(outdir,tag,category)
 
     if args.stroll:
         for d in stroll(r):
