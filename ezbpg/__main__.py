@@ -28,7 +28,6 @@ def process(g):
     print("Making for %d components total." % total['component'])
     return r
 
-
 def dumpfor(outdir,tag,category):
     subdir = "%s/%s" % (outdir,tag);
     mkdir_soft(outdir)
@@ -46,6 +45,10 @@ def dumpfor(outdir,tag,category):
             edgelist = sorted(g.edges())
             with open(outpath,"wt") as f:
                 ezbpg.ioutil.save_edges(f,edgelist)
+
+def dumpall(outdir,r):
+    for tag,catiter in r.walk2():
+        pass
 
 def stroll(r):
     for d in r.walk():
