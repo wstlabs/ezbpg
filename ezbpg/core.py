@@ -105,13 +105,22 @@ class BipartiteGraph(object):
             for k in self.a[j]:
                 yield (j,k)
 
+    def isempty(self):
+        return len(self.a) == 0 or len(self.b) == 0
+
+    def peel(self):
+        return peelfrom(self.a,self.b)
+
     # Emits a forest of components, by (invasively) "peeling" each 
     # component from our tuple of association maps.  When there are
     # no more components to peel, the generator halts (and our
     # association maps will be empty).
     def forest(self):
-        while len(self.a) or len(self.b):
-            yield peel(self.a,self.b)
+        while not self.isempty():
+            edges = self.peel()
+            edges = set(edges)
+            # print(edges)
+            yield list(edges)
 
 
 
@@ -221,7 +230,37 @@ def innersum(sequence):
 # Note that while this operation is order-dependent, it can be applied 
 # in either direction to the association maps on our Matcher struct.
 #
-def peel(x,y):
+def peelfrom(x,y):
+    if not len(x) and len(y):
+        return None
+    edgelist = []
+    jj = deque(islice(x.keys(),0,1))
+    kk = deque()
+    hungry = True
+    while hungry:
+        if len(jj):
+            j = jj.popleft()
+            if j in x:
+                nodes = x.pop(j)
+                for k in nodes:
+                    # if (j,k) not in edgelist:
+                    #    edgelist.append((j,k))
+                    yield j,k
+                    kk.append(k)
+        elif len(kk):
+            k = kk.popleft()
+            if k in y:
+                nodes = y.pop(k)
+                for j in nodes:
+                    # if (j,k) not in edgelist:
+                    #    edgelist.append((j,k))
+                    yield j,k
+                    jj.append(j)
+        else:
+            hungry = False
+
+#
+def __peel(x,y):
     if not len(x) and len(y):
         return None
     edgelist = []
