@@ -188,6 +188,17 @@ class RefinedPartition(object):
     def describe(self):
         return describe_partition(self.r)
 
+    def walk(self):
+        """Performs an ordered traversal of a refined partition :r, yielding a seguence
+        of OrderedDict structs keyed on the fields ('cat','dims','seq','edges'), where each
+        dict corresponds to a component in our forest.  [Need to explain these fields].
+        """
+        for k,category in self:
+            for t in sorted(category.keys()):
+                for i,edges in enumerate(category[t]):
+                    items = [('cat',k),('dims',t),('seq',i+1),('edges',edges)]
+                    yield OrderedDict(items)
+
 
 def refined_partition(p):
     """

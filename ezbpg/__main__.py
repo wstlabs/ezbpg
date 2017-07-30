@@ -29,7 +29,7 @@ def process(g):
     return r
 
 
-def walk(r):
+def __walk(r):
     """Performs an ordered traversal of a refined partition :r, yielding a seguence
     of OrderedDict structs keyed on the fields ('cat','dims','seq','edges'), where each
     dict corresponds to a component in our forest.  [Need to explain these fields].
@@ -72,14 +72,14 @@ def main():
             dumpall(outdir,tag,category)
 
     if args.stroll:
-        for r in walk(r):
+        for d in r.walk():
             # We can -almost- just print our dicts as-is, except for the possibly
             # very long edge lists.  So we make a quick substitution:
-            edges = r['edges']
+            edges = d['edges']
             n = len(edges)
             _pl = 's' if n > 1 else ''
-            r['edges'] = "[%d edge%s]" % (n,_pl)
-            print(r)
+            d['edges'] = "[%d edge%s]" % (n,_pl)
+            print(d)
 
     print("done")
 
