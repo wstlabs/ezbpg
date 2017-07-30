@@ -21,6 +21,13 @@ class BipartiteGraph(object):
         self.a = defaultdict(set)
         self.b = defaultdict(set)
 
+    @property
+    def dims(self):
+        return len(self.a),len(self.b)
+
+    def __len__(self):
+        return self.distinct
+
     def assoc(self,tag):
         if tag == 'A': return self.a
         if tag == 'B': return self.b
@@ -109,7 +116,8 @@ class BipartiteGraph(object):
         return len(self.a) == 0 or len(self.b) == 0
 
     def peel(self):
-        return peelfrom(self.a,self.b)
+        edges = peelfrom(self.a,self.b)
+        return BipartiteGraph(edges) if edges else None
 
     # Emits a forest of components, by (invasively) "peeling" each 
     # component from our tuple of association maps.  When there are
@@ -117,13 +125,84 @@ class BipartiteGraph(object):
     # association maps will be empty).
     def forest(self):
         while not self.isempty():
-            edges = self.peel()
-            edges = set(edges)
+            yield self.peel()
+            # edges = self.peel()
+            # edges = set(edges)
             # print(edges)
-            yield list(edges)
+            # yield list(edges)
+
+    def partition(self):
+        return Partition(self)
 
 
+class Partition(object):
 
+    def __init__(self,g):
+        """
+        Constructs a partition of the forest of connected components of the
+        given graph :g, emptying :g in the process.
+        """
+        self.consume(g)
+
+    def consume(self,g):
+        self.r = partition_forest(g)
+        # print("okay, r = %s" % type(self.r))
+
+    def keys(self):
+        yield from self.r.keys()
+
+    def __iter__(self):
+        # print("hey, r = %s" % type(self.r))
+        yield from self.r.items()
+
+
+    def __len__(self):
+        return len(self.r)
+
+    def refine():
+        pass
+
+
+def partition_forest(g,sort=True):
+    p = defaultdict(list)
+    for subg in g.forest():
+        p[subg.dims].append(subg)
+    return p
+
+# Given a tuple of integers, returns a simple tag describing its
+
+def __partition_forest(g,sort=True):
+    p = defaultdict(list)
+    for subgraph in g.forest():
+        if (sort):
+            edgelist = sorted(edgelist)
+        nj,nk = classify(edgelist)
+        p[(nj,nk)].append(edgelist)
+    return p
+
+def refine_partition(p):
+    tags = ('1-1','1-n','m-1','m-n')
+    r = OrderedDict((_,{}) for _ in tags)
+    # print("yow, p = %s" % type(p))
+    # print("yow, p = %s" % dir(p))
+    # print("len = %s" % len(p))
+    # print("now..")
+    for k,v in p:
+        # print("k,v = %s,%s" % (type(k),type(v)))
+        tag = simplify(*k)
+        r[tag][k] = v
+    return r
+
+def __refine_partition(p):
+    tags = ('1-1','1-n','m-1','m-n')
+    r = OrderedDict((_,{}) for _ in tags)
+    for nj,nk in sorted(p.keys()):
+        tag = simplify(nj,nk)
+        r[tag][(nj,nk)] = p[(nj,nk)]
+    return r
+
+
+# Given a tuple of integers, returns a simple tag describing its
 
 # Valence histogram for a given association map
 def valhist(x):
@@ -145,30 +224,12 @@ def classify(edgeseq):
     jj,kk = vertexset(edgeseq)
     return len(jj),len(kk)
 
-def partition_forest(g,sort=True):
-    p = defaultdict(list)
-    for edgelist in g.forest():
-        if (sort):
-            edgelist = sorted(edgelist)
-        nj,nk = classify(edgelist)
-        p[(nj,nk)].append(edgelist)
-    return p
-
-# Given a tuple of integers, returns a simple tag describing its
 # multiplicity class.
 def simplify(nj,nk):
     if (nj,nk) == (1,1): return '1-1'
     elif nj == 1: return '1-n'
     elif nk == 1: return 'm-1'
     else: return 'm-n'
-
-def refine_partition(p):
-    tags = ('1-1','1-n','m-1','m-n')
-    r = OrderedDict((_,{}) for _ in tags)
-    for nj,nk in sorted(p.keys()):
-        tag = simplify(nj,nk)
-        r[tag][(nj,nk)] = p[(nj,nk)]
-    return r
 
 def edgeseq2stats(edgeseq):
     return BipartiteGraph(edgeseq).stats()
@@ -195,8 +256,10 @@ def describe_partition(r):
         count['component'] = sum(len(r[tag][x]) for x in r[tag])
         for x in r[tag].keys():
             components = r[tag][x]
-            for edgelist in components:
-                stats = BipartiteGraph(edgelist).stats()
+            # for edgelist in components:
+            #    stats = BipartiteGraph(edgelist).stats()
+            for g in components:
+                stats = g.stats()
                 count['edge'] += stats['edges']
                 count['vertex-A'] += stats['vertices']['A']
                 count['vertex-B'] += stats['vertices']['B']

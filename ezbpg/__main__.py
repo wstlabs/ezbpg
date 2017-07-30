@@ -22,7 +22,8 @@ def process(g):
     """
     Partitions and refines our graph :g, and prints some nice stats about it.
     """
-    p = partition_forest(g)
+    p = g.partition()
+    print("hey, p = %s" % type(p))
     r = refine_partition(p)
     rows,total = describe_partition(r)
     print(tabulate(rows,headers="firstrow"))
@@ -61,10 +62,11 @@ def dumpall(outdir,tag,r):
         nj,nk = t
         components = category[t]
         # print ("class[%s] = has %d component(s):" % (t,len(components)))
-        for i,edgelist in enumerate(components):
+        for i,g in enumerate(components):
             basefile = "%d,%d-%d.txt" % (nj,nk,i)
             outpath = "%s/%s" % (subdir,basefile)
             # print("%s .." % outpath)
+            edgelist = sorted(g.edges())
             with open(outpath,"wt") as f:
                 ezbpg.ioutil.save_edges(f,edgelist)
 
