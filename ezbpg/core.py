@@ -105,7 +105,6 @@ class BipartiteGraph(object):
         if self.contains(edge):
             self.remove(edge)
 
-
     def edges(self):
         edges = set()
         for j in self.a:
@@ -172,12 +171,10 @@ def refine_partition(p):
     return r
 
 
-# Given a tuple of integers, returns a simple tag describing its
 
 # Valence histogram for a given association map
 def valhist(x):
     return dict(Counter(len(x[i]) for i in x))
-
 
 
 # Projects an edge sequence onto its two respective vertex sets. 
@@ -201,8 +198,6 @@ def simplify(nj,nk):
     elif nk == 1: return 'm-1'
     else: return 'm-n'
 
-def edgeseq2stats(edgeseq):
-    return BipartiteGraph(edgeseq).stats()
 
 #
 # Given a refined partition struct r, generates a nice rowset describing
@@ -237,9 +232,6 @@ def describe_partition(r):
         total['class'] += len(compclasses)
     rows.append(["total"] + [total[k] for k in headerkeys])
     return rows,total
-
-def innersum(sequence):
-   return sum(len(x) for x in sequence)
 
 
 def peelfrom(x,y):
