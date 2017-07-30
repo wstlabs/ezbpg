@@ -29,20 +29,14 @@ def process(g):
     return r
 
 
-def walk(r,clone=False):
+def walk(r):
     """Performs an ordered traversal of a refined partition :r, yielding a seguence
     of OrderedDict structs keyed on the fields ('cat','dims','seq','edges'), where each
     dict corresponds to a component in our forest.  [Need to explain these fields].
-
-    If an optional :clone flag is provided, we clone (deepcopy) the edge list on
-    the way out.  (Which is safer, because otherwise our edgelists would be members
-    embedded in our partition struct somewhere, but at performance cost of course).
     """
     for k,category in r:
         for t in sorted(category.keys()):
             for i,edges in enumerate(category[t]):
-                if clone:
-                    edges = copy.deepcopy(edges)
                 items = [('cat',k),('dims',t),('seq',i+1),('edges',edges)]
                 yield OrderedDict(items)
 
@@ -78,7 +72,7 @@ def main():
             dumpall(outdir,tag,category)
 
     if args.stroll:
-        for r in walk(r,clone=True):
+        for r in walk(r):
             # We can -almost- just print our dicts as-is, except for the possibly
             # very long edge lists.  So we make a quick substitution:
             edges = r['edges']
