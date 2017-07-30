@@ -215,6 +215,9 @@ class RefinedPartition(object):
             yield cat,(pluck(r,'cat') for r in reciter)
 
 
+    def project(self):
+        return project_refined(self)
+
 def pluck(r,k):
     del r[k]
     return r
@@ -230,6 +233,25 @@ def refined_partition(p):
         tag = simplify(*k)
         r[tag][k] = v
     return r
+
+def project_refined(r):
+    """
+    Projects a refined partition into a simple relational schema which we'll
+    define later.
+    """
+    rowset = []
+    cluster,j = [],1
+    for tag,category in r.walk2():
+        for r in category:
+            depth = 0
+            na,nb = r['dims']
+            i,g = r['seq'],r['graph']
+            for a,b in g.edges():
+                rowset.append([a,b,j])
+                depth += 1
+            cluster.append([j,na,nb,depth])
+            j += 1
+    return rowset,cluster
 
 
 # Valence histogram for a given association map

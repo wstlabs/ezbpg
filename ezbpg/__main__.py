@@ -3,6 +3,7 @@ import os, sys, argparse
 import simplejson as json
 from collections import OrderedDict
 from tabulate import tabulate
+import ioany
 import ezbpg
 # from ezbpg.core import describe_partition
 
@@ -28,6 +29,18 @@ def process(g):
     print(tabulate(rows,headers="firstrow"))
     print("Making for %d components total." % total['component'])
     return r
+
+def project(outdir,r):
+    rowset,cluster = r.project()
+    print("rowset = %d, cluster = %d" % (len(rowset),len(cluster)))
+
+    fields = ('a','b','cluster')
+    outpath = "%s/rowset.csv" % outdir
+    ioany.save_csv(outpath,rowset,header=fields)
+
+    fields = ('cluster','na','nb','depth')
+    outpath = "%s/cluster.csv" % outdir
+    ioany.save_csv(outpath,cluster,header=fields)
 
 def dumpall(outdir,r):
     mkdir_soft(outdir)
@@ -75,6 +88,7 @@ def main():
     outdir = 'comp'
     if args.dump:
         dumpall(outdir,r)
+        project(outdir,r)
 
     if args.stroll:
         for d in stroll(r):
