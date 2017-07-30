@@ -162,6 +162,10 @@ class Partition(object):
     def __len__(self):
         return len(self.r)
 
+    def __str__(self):
+        name = self.__class__.__name__
+        return "%s(len=%s)" % (name,len(self))
+
     def refine(self):
         return RefinedPartition(self)
 
