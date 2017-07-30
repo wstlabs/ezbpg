@@ -211,10 +211,6 @@ def innersum(sequence):
    return sum(len(x) for x in sequence)
 
 
-
-
-
-
 def peelfrom(x,y):
     """
     A weird function which invasively "peels" a random connected component
