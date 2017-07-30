@@ -29,18 +29,6 @@ def process(g):
     return r
 
 
-def __walk(r):
-    """Performs an ordered traversal of a refined partition :r, yielding a seguence
-    of OrderedDict structs keyed on the fields ('cat','dims','seq','edges'), where each
-    dict corresponds to a component in our forest.  [Need to explain these fields].
-    """
-    for k,category in r:
-        for t in sorted(category.keys()):
-            for i,edges in enumerate(category[t]):
-                items = [('cat',k),('dims',t),('seq',i+1),('edges',edges)]
-                yield OrderedDict(items)
-
-
 def dumpall(outdir,tag,category):
     subdir = "%s/%s" % (outdir,tag);
     mkdir_soft(outdir)
@@ -87,4 +75,21 @@ if __name__ == '__main__':
     main()
 
 
+
+
+
+
+#
+# Deprecated Stuff 
+#
+def __walk(r):
+    """Performs an ordered traversal of a refined partition :r, yielding a seguence
+    of OrderedDict structs keyed on the fields ('cat','dims','seq','edges'), where each
+    dict corresponds to a component in our forest.  [Need to explain these fields].
+    """
+    for k,category in r:
+        for t in sorted(category.keys()):
+            for i,edges in enumerate(category[t]):
+                items = [('cat',k),('dims',t),('seq',i+1),('edges',edges)]
+                yield OrderedDict(items)
 
