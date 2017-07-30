@@ -1,5 +1,5 @@
 import simplejson as json
-from itertools import islice
+from itertools import islice, groupby
 from collections import OrderedDict, defaultdict, deque, Counter
 
 class BipartiteGraph(object):
@@ -208,6 +208,10 @@ class RefinedPartition(object):
                     items = [('cat',k),('dims',t),('seq',i+1),('graph',graph)]
                     yield OrderedDict(items)
 
+    def walk2(self):
+        """An alternate traversal that's simply a group-by of the walk() traversal 
+        on category tag."""
+        pass
 
 def refined_partition(p):
     """
