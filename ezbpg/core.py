@@ -195,8 +195,8 @@ class RefinedPartition(object):
         """
         for k,category in self:
             for t in sorted(category.keys()):
-                for i,edges in enumerate(category[t]):
-                    items = [('cat',k),('dims',t),('seq',i+1),('edges',edges)]
+                for i,graph in enumerate(category[t]):
+                    items = [('cat',k),('dims',t),('seq',i+1),('graph',graph)]
                     yield OrderedDict(items)
 
 
