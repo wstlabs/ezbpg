@@ -135,7 +135,7 @@ class Partition(object):
     A simple container representing a special partition of BipartiteGraph structs
     represented as a dict-of-list structs, where the keys in the dicts are dimension
     tuples (e.g. (1,1), (1,3), (3,2), ...) and the values are lists of components
-    having those dimensions. 
+    having those dimensions.
     """
 
     def __init__(self,g):
@@ -180,11 +180,9 @@ def partition_forest(g,sort=True):
         p[subg.dims].append(subg)
     return p
 
-
 # Valence histogram for a given association map
 def valhist(x):
     return dict(Counter(len(x[i]) for i in x))
-
 
 # Projects an edge sequence onto its two respective vertex sets. 
 def vertexset(edgeseq):

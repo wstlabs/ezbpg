@@ -22,14 +22,10 @@ def process(g):
     """
     Partitions and refines our graph :g, and prints some nice stats about it.
     """
-    # print("hey, p = %s" % type(p))
-    # r = refine_partition(p)
     r = g.partition().refine()
     rows,total = describe_partition(r)
     print(tabulate(rows,headers="firstrow"))
     print("Making for %d components total." % total['component'])
-    # for tag in sorted(r.keys()):
-    #     print("class[%s] = %s" % (tag,{x:len(r[tag][x]) for x in r[tag]}))
     return r
 
 
@@ -75,7 +71,6 @@ def main():
 
     g = ezbpg.slurp(args.infile)
     print("Consumed %d edge observations, of which %d were distinct." % (g.observed,g.distinct))
-    # print("stats = ",json.dumps(g.stats(),sort_keys=True))
     r = process(g)
 
     outdir = 'comp'
