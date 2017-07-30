@@ -215,22 +215,30 @@ def innersum(sequence):
 
 
 
-#
-# "Peels" a semi-random cluster from the adjacency maps x and y,
-# starting at a "random-ish" node chosen from map x (which won't be 
-# truly random; but rather will simply be the first key emited that 
-# map's underlying dict struct).
-#
-# This it does by simply walking back and forth between the respective 
-# association maps, and traversing the connected component identified 
-# by our starting node.  As it does so, it invavisely plucks ("peels") 
-# both nodes and edges of the component it traverses from the given 
-# associaton maps.
-#
-# Note that while this operation is order-dependent, it can be applied 
-# in either direction to the association maps on our Matcher struct.
-#
 def peelfrom(x,y):
+    """
+    A weird function which invasively "peels" a random connected component
+    from the pair of adjacency maps :x and :y.  The "component" is provided
+    in the form of a yielded sequence of edges (2-tuples of vertices from
+    the original pair of adjency pays), each presented twice.
+
+    As the iterator exhausts, it (invasively) pops from one or the other
+    of the adjacency maps.  As such, this method is not "transaction-safe":
+    if you stop the iteration before it's done, you'll almost certainly
+    wind up with a pair of corrupted adjecency maps (and you won't have a
+    meaningful edge list, either).  But if you let it run to the end, both
+    the edge list and the adjacency maps will each be in a coherent state.
+
+    As to why it presents each edge twice: that's a side effect of the
+    algorithm's drop-dead simplicity.  Any approach which avoids this side
+    effect would, necessarily, require -some- kind of overhead -- either
+    some kind of internal memoization, or a more clever algorithm.
+
+    Favoring siplicity, we elect to emit a "noisy" -- which is trivially
+    de-duped, especailly if you feed the redundant edge sequence directly
+    into the constructor for the BipartiteGraph class.  Which is in fact
+    the itended use case for this function.
+    """
     if not len(x) and len(y):
         return None
     edgelist = []
@@ -243,8 +251,6 @@ def peelfrom(x,y):
             if j in x:
                 nodes = x.pop(j)
                 for k in nodes:
-                    # if (j,k) not in edgelist:
-                    #    edgelist.append((j,k))
                     yield j,k
                     kk.append(k)
         elif len(kk):
@@ -252,14 +258,14 @@ def peelfrom(x,y):
             if k in y:
                 nodes = y.pop(k)
                 for j in nodes:
-                    # if (j,k) not in edgelist:
-                    #    edgelist.append((j,k))
                     yield j,k
                     jj.append(j)
         else:
             hungry = False
 
-#
+# DEPRECATED
+# An older version of the above, which produced a de-duped edgelist 
+# (somewhat inefficiently), rather than yielding a sequence of (duped) edges. 
 def __peel(x,y):
     if not len(x) and len(y):
         return None
