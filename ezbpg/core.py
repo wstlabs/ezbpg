@@ -158,20 +158,7 @@ class Partition(object):
         return len(self.r)
 
     def refine(self):
-        """
-        Creates a refinement of this partition, where the keys are category
-        groupings based on the tags ('1-1','1-n','m-1','m-n'), and their values
-        are in turn the sub-partitions for each category.
-
-        Note that their child lists will, in turn, be the member lists in this
-        partition (rather than cloned lists), for performance considerations.
-        """
-        tags = ('1-1','1-n','m-1','m-n')
-        r = OrderedDict((_,{}) for _ in tags)
-        for k,v in self:
-            tag = simplify(*k)
-            r[tag][k] = v
-        return r
+        return RefinedPartition(self)
 
 
 def partition_forest(g,sort=True):
@@ -179,6 +166,41 @@ def partition_forest(g,sort=True):
     for subg in g.forest():
         p[subg.dims].append(subg)
     return p
+
+
+class RefinedPartition(object):
+    """
+    A simple (immutable) container representing a 'refined partition' of a forest,
+    wherein the keys are category groupings based on the tags ('1-1','1-n','m-1','m-n'),
+    and their values are in turn the sub-partitions for each category.
+
+    As with the Partition container, this is a volatile, wrapping container:
+    the child lists will simply be raw member lists from the base partition
+    (rather than cloned lists), for performance considerations.
+    """
+
+    def __init__(self,p):
+        self.r = refined_partition(p)
+
+    def __iter__(self):
+        yield from self.r.items()
+
+    def describe(self):
+        return describe_partition(self.r)
+
+
+def refined_partition(p):
+    """
+    Creates the underlying OrderedDict struct used by the RefinedPartition
+    struct.  See the docstring for that class for details.
+    """
+    tags = ('1-1','1-n','m-1','m-n')
+    r = OrderedDict((_,{}) for _ in tags)
+    for k,v in p:
+        tag = simplify(*k)
+        r[tag][k] = v
+    return r
+
 
 # Valence histogram for a given association map
 def valhist(x):

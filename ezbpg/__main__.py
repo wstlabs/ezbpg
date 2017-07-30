@@ -4,7 +4,7 @@ import simplejson as json
 from collections import OrderedDict
 from tabulate import tabulate
 import ezbpg
-from ezbpg.core import describe_partition
+# from ezbpg.core import describe_partition
 
 def parse_args():
     parser = argparse.ArgumentParser()
@@ -23,7 +23,7 @@ def process(g):
     Partitions and refines our graph :g, and prints some nice stats about it.
     """
     r = g.partition().refine()
-    rows,total = describe_partition(r)
+    rows,total = r.describe()
     print(tabulate(rows,headers="firstrow"))
     print("Making for %d components total." % total['component'])
     return r
@@ -38,7 +38,7 @@ def walk(r,clone=False):
     the way out.  (Which is safer, because otherwise our edgelists would be members
     embedded in our partition struct somewhere, but at performance cost of course).
     """
-    for k,category in r.items():
+    for k,category in r:
         for t in sorted(category.keys()):
             for i,edges in enumerate(category[t]):
                 if clone:
@@ -47,8 +47,7 @@ def walk(r,clone=False):
                 yield OrderedDict(items)
 
 
-def dumpall(outdir,tag,r):
-    category = r[tag]
+def dumpall(outdir,tag,category):
     subdir = "%s/%s" % (outdir,tag);
     mkdir_soft(outdir)
     mkdir_soft(subdir)
@@ -75,9 +74,8 @@ def main():
 
     outdir = 'comp'
     if args.dump:
-        tags = sorted(r.keys())
-        for tag in tags:
-            dumpall(outdir,tag,r)
+        for tag,category in r:
+            dumpall(outdir,tag,category)
 
     if args.stroll:
         for r in walk(r,clone=True):
