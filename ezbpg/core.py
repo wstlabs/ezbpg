@@ -157,8 +157,8 @@ class Partition(object):
     def __len__(self):
         return len(self.r)
 
-    def refine():
-        pass
+    def refine(self):
+        return refine_partition(self)
 
 
 def partition_forest(g,sort=True):
@@ -166,7 +166,6 @@ def partition_forest(g,sort=True):
     for subg in g.forest():
         p[subg.dims].append(subg)
     return p
-
 
 def refine_partition(p):
     tags = ('1-1','1-n','m-1','m-n')

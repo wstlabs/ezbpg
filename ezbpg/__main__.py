@@ -22,9 +22,9 @@ def process(g):
     """
     Partitions and refines our graph :g, and prints some nice stats about it.
     """
-    p = g.partition()
-    print("hey, p = %s" % type(p))
-    r = refine_partition(p)
+    # print("hey, p = %s" % type(p))
+    # r = refine_partition(p)
+    r = g.partition().refine()
     rows,total = describe_partition(r)
     print(tabulate(rows,headers="firstrow"))
     print("Making for %d components total." % total['component'])
