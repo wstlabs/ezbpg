@@ -180,8 +180,6 @@ def partition_forest(g,sort=True):
         p[subg.dims].append(subg)
     return p
 
-def refine_partition():
-    pass
 
 # Valence histogram for a given association map
 def valhist(x):

@@ -4,7 +4,7 @@ import simplejson as json
 from collections import OrderedDict
 from tabulate import tabulate
 import ezbpg
-from ezbpg.core import partition_forest, refine_partition, describe_partition
+from ezbpg.core import describe_partition
 
 def parse_args():
     parser = argparse.ArgumentParser()
