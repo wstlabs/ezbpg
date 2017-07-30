@@ -75,8 +75,6 @@ def main():
     outdir = 'comp'
     if args.dump:
         dumpall(outdir,r)
-        # for tag,category in r:
-        #    dumpfor(outdir,tag,category)
 
     if args.stroll:
         for d in stroll(r):
