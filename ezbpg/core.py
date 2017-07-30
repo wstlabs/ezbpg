@@ -184,20 +184,6 @@ def partition_forest(g,sort=True):
 def valhist(x):
     return dict(Counter(len(x[i]) for i in x))
 
-# Projects an edge sequence onto its two respective vertex sets. 
-def vertexset(edgeseq):
-    jj,kk = set(),set()
-    for j,k in edgeseq:
-        jj.add(j)
-        kk.add(k)
-    return jj,kk
-
-# Given a sequence of edges, returns a tuple representing the size of 
-# each respective vertex set.  
-def classify(edgeseq):
-    jj,kk = vertexset(edgeseq)
-    return len(jj),len(kk)
-
 # multiplicity class.
 def simplify(nj,nk):
     if (nj,nk) == (1,1): return '1-1'
@@ -338,5 +324,19 @@ def __refine_partition(p):
         tag = simplify(nj,nk)
         r[tag][(nj,nk)] = p[(nj,nk)]
     return r
+
+# Projects an edge sequence onto its two respective vertex sets. 
+def __vertexset(edgeseq):
+    jj,kk = set(),set()
+    for j,k in edgeseq:
+        jj.add(j)
+        kk.add(k)
+    return jj,kk
+
+# Given a sequence of edges, returns a tuple representing the size of 
+# each respective vertex set.  
+def __classify(edgeseq):
+    jj,kk = __vertexset(edgeseq)
+    return len(jj),len(kk)
 
 
