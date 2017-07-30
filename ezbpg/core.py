@@ -169,16 +169,6 @@ def partition_forest(g,sort=True):
         p[subg.dims].append(subg)
     return p
 
-# Given a tuple of integers, returns a simple tag describing its
-
-def __partition_forest(g,sort=True):
-    p = defaultdict(list)
-    for subgraph in g.forest():
-        if (sort):
-            edgelist = sorted(edgelist)
-        nj,nk = classify(edgelist)
-        p[(nj,nk)].append(edgelist)
-    return p
 
 def refine_partition(p):
     tags = ('1-1','1-n','m-1','m-n')
@@ -191,14 +181,6 @@ def refine_partition(p):
         # print("k,v = %s,%s" % (type(k),type(v)))
         tag = simplify(*k)
         r[tag][k] = v
-    return r
-
-def __refine_partition(p):
-    tags = ('1-1','1-n','m-1','m-n')
-    r = OrderedDict((_,{}) for _ in tags)
-    for nj,nk in sorted(p.keys()):
-        tag = simplify(nj,nk)
-        r[tag][(nj,nk)] = p[(nj,nk)]
     return r
 
 
@@ -352,4 +334,22 @@ def __peel(x,y):
         else:
             hungry = False
     return edgelist
+
+def __partition_forest(g,sort=True):
+    p = defaultdict(list)
+    for subgraph in g.forest():
+        if (sort):
+            edgelist = sorted(edgelist)
+        nj,nk = classify(edgelist)
+        p[(nj,nk)].append(edgelist)
+    return p
+
+def __refine_partition(p):
+    tags = ('1-1','1-n','m-1','m-n')
+    r = OrderedDict((_,{}) for _ in tags)
+    for nj,nk in sorted(p.keys()):
+        tag = simplify(nj,nk)
+        r[tag][(nj,nk)] = p[(nj,nk)]
+    return r
+
 
