@@ -126,10 +126,6 @@ class BipartiteGraph(object):
     def forest(self):
         while not self.isempty():
             yield self.peel()
-            # edges = self.peel()
-            # edges = set(edges)
-            # print(edges)
-            # yield list(edges)
 
     def partition(self):
         return Partition(self)
@@ -146,15 +142,12 @@ class Partition(object):
 
     def consume(self,g):
         self.r = partition_forest(g)
-        # print("okay, r = %s" % type(self.r))
 
     def keys(self):
         yield from self.r.keys()
 
     def __iter__(self):
-        # print("hey, r = %s" % type(self.r))
         yield from self.r.items()
-
 
     def __len__(self):
         return len(self.r)
@@ -173,12 +166,7 @@ def partition_forest(g,sort=True):
 def refine_partition(p):
     tags = ('1-1','1-n','m-1','m-n')
     r = OrderedDict((_,{}) for _ in tags)
-    # print("yow, p = %s" % type(p))
-    # print("yow, p = %s" % dir(p))
-    # print("len = %s" % len(p))
-    # print("now..")
     for k,v in p:
-        # print("k,v = %s,%s" % (type(k),type(v)))
         tag = simplify(*k)
         r[tag][k] = v
     return r
@@ -238,8 +226,6 @@ def describe_partition(r):
         count['component'] = sum(len(r[tag][x]) for x in r[tag])
         for x in r[tag].keys():
             components = r[tag][x]
-            # for edgelist in components:
-            #    stats = BipartiteGraph(edgelist).stats()
             for g in components:
                 stats = g.stats()
                 count['edge'] += stats['edges']
@@ -303,6 +289,8 @@ def peelfrom(x,y):
                     jj.append(j)
         else:
             hungry = False
+
+
 
 # DEPRECATED
 # An older version of the above, which produced a de-duped edgelist 
