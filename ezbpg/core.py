@@ -28,6 +28,11 @@ class BipartiteGraph(object):
     def __len__(self):
         return self.distinct
 
+    def __str__(self):
+        name = self.__class__.__name__
+        stats = "edges=%s, |A|=%d, |B}=%d" % (self.distinct,len(self.a),len(self.b))
+        return "%s(%s)" % (name,stats)
+
     def assoc(self,tag):
         if tag == 'A': return self.a
         if tag == 'B': return self.b
@@ -307,7 +312,6 @@ def peelfrom(x,y):
                     jj.append(j)
         else:
             hungry = False
-
 
 
 # DEPRECATED

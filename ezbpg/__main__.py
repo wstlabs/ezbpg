@@ -54,9 +54,11 @@ def stroll(r):
     for d in r.walk():
         # We can -almost- just print our dicts as-is, except for the possibly
         # very long edge lists.  So we make a quick substitution:
-        n = len(d['graph'])
-        _pl = 's' if n > 1 else ''
-        d['graph'] = "[%d edge%s]" % (n,_pl)
+        # n = len(d['graph'])
+        # _pl = 's' if n > 1 else ''
+        # d['graph'] = "[%d edge%s]" % (n,_pl)
+        g = d['graph']
+        d['graph'] = str(g)
         yield d
 
 def main():
