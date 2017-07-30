@@ -47,6 +47,16 @@ def dumpall(outdir,tag,category):
             with open(outpath,"wt") as f:
                 ezbpg.ioutil.save_edges(f,edgelist)
 
+def stroll(r):
+    for d in r.walk():
+        # We can -almost- just print our dicts as-is, except for the possibly
+        # very long edge lists.  So we make a quick substitution:
+        edges = d['edges']
+        n = len(edges)
+        _pl = 's' if n > 1 else ''
+        d['edges'] = "[%d edge%s]" % (n,_pl)
+        yield d
+
 def main():
     args = parse_args()
 
@@ -60,13 +70,7 @@ def main():
             dumpall(outdir,tag,category)
 
     if args.stroll:
-        for d in r.walk():
-            # We can -almost- just print our dicts as-is, except for the possibly
-            # very long edge lists.  So we make a quick substitution:
-            edges = d['edges']
-            n = len(edges)
-            _pl = 's' if n > 1 else ''
-            d['edges'] = "[%d edge%s]" % (n,_pl)
+        for d in stroll(r):
             print(d)
 
     print("done")
