@@ -53,7 +53,6 @@ def dumpall(outdir,r):
             i,g = r['seq'],r['graph']
             basefile = "%d,%d-%d.csv" % (nj,nk,i)
             outpath = "%s/%s" % (subdir,basefile)
-            # print("%s .." % outpath)
             edgelist = sorted(g.edges())
             with open(outpath,"wt") as f:
                 ezbpg.ioutil.save_edges(f,edgelist)
