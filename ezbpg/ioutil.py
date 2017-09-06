@@ -11,10 +11,10 @@ def csviter(path,encoding='utf-8'):
         yield tuple(line.rstrip().split(','))
 
 def purify(tupseq):
+    print(tupseq)
     for x,y in tupseq:
         if x is not None and y is not None:
             yield x,y
-
 
 def save_edges(f,edgeseq):
     for edge in edgeseq:
