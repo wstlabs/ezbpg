@@ -21,6 +21,7 @@ def purify(tupseq):
             yield x,y
 
 def save_edges(f,edgeseq):
+    writer = csv.writer(f)
     for edge in edgeseq:
-        f.write("%s,%s\n" % edge)
+        writer.writerow(edge)
 
