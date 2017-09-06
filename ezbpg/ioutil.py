@@ -1,3 +1,4 @@
+import csv
 
 def cleaniter(path,encoding='utf-8'):
     with open(path,"rtU",encoding=encoding) as f:
@@ -6,13 +7,15 @@ def cleaniter(path,encoding='utf-8'):
             if len(clean):
                 yield clean
 
-def csviter(path,encoding='utf-8'):
-    for line in cleaniter(path,encoding):
-        yield tuple(line.rstrip().split(','))
+def csviter(path,encoding='utf-8',csvargs=None):
+    if csvargs is None:
+        csvargs = {}
+    with open(path,"rt",encoding=encoding) as f:
+        yield from csv.reader(f,**csvargs)
 
 def purify(tupseq):
     """Consumes a sequence of tuples (presumed to be uniformly of length 2) and emits
-    only those where both elements are not None.""" 
+    only those where both elements are not None."""
     for t in tupseq:
          # We do this check because from time to time we ingest tuples that either come
          # from CSV files that are themselves dirty (e.g not strictly 2 columns), or the
