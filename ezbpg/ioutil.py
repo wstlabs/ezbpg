@@ -11,10 +11,12 @@ def csviter(path,encoding='utf-8'):
         yield tuple(line.rstrip().split(','))
 
 def purify(tupseq):
+    """Consumes a sequence of tuples (presumed to be uniformly of length 2) and emits
+    only those where both elements are not None.""" 
     for t in tupseq:
-         # We do this check because from time to time we ingest tuples that either come 
+         # We do this check because from time to time we ingest tuples that either come
          # from CSV files that are themselves dirty (e.g not strictly 2 columns), or the
-         # CSV parser has been incorrectly configured (to not recognize quote lines with 
+         # CSV parser has been incorrectly configured (to not recognize quote lines with
          # embedded commas, for example).
         if len(t) != 2:
             raise ValueError("invalid tuple length")
