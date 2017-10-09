@@ -67,6 +67,7 @@ class BipartiteGraph(object):
         return {k:sorted(self.b[k]) for k in self.b}
 
     def add(self,edge):
+        """Adds an :edge (a tuple representing a pair vertices) to the graph."""
         j,k = edge
         self.seen.add((j,k))
         self.a[j].add(k)
