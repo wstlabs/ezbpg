@@ -7,7 +7,7 @@ class BipartiteGraph(object):
     A simple representation of a BipartiteGraph.
     """
 
-    def __init__(self,edgeseq):
+    def __init__(self,edgeseq=None):
         """
         :param edgeseq: An iterable container of edges
         :return: A bipartite graph
