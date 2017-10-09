@@ -12,6 +12,8 @@ class BipartiteGraph(object):
         :param edgeseq: An iterable container of edges
         :return: A bipartite graph
         """
+        if edgeseq is None:
+            edgeseq = []
         self.consume(edgeseq)
 
     def reset(self):
@@ -70,6 +72,7 @@ class BipartiteGraph(object):
         self.a[j].add(k)
         self.b[k].add(j)
         self.observed += 1
+        self.distinct = len(self.seen)
 
     # Ingests an edge list for a bipartite graph  -- represented by a sequence
     # of tuples (j,k) of indices on the corresponding vertex sets A and B --
@@ -79,8 +82,6 @@ class BipartiteGraph(object):
         self.reset()
         for edge in edgeseq:
             self.add(edge)
-        self.distinct = len(self.seen)
-        self.seen = None
         return self
 
     def contains(self,edge):
