@@ -1,10 +1,15 @@
 import os, sys
 from tabulate import tabulate
 import ioany
+from . import ioutil
 
 """
 A nifty module of nifty support functions.
 """
+
+def mkdir_soft(dirpath):
+    if not os.path.exists(dirpath):
+        os.mkdir(dirpath)
 
 def process(g):
     """Partitions and refines our graph :g, and prints some nice stats about it."""
@@ -39,7 +44,7 @@ def dumpall(outdir,r):
             outpath = "%s/%s" % (subdir,basefile)
             edgelist = sorted(g.edges())
             with open(outpath,"wt") as f:
-                ezbpg.ioutil.save_edges(f,edgelist)
+                ioutil.save_edges(f,edgelist)
 
 def flatten(d):
     """
