@@ -6,7 +6,6 @@ from tabulate import tabulate
 import ioany
 import ezbpg
 from .utils import process, dumpall, project, stroll, stroll_over
-# from ezbpg.core import describe_partition
 
 def parse_args():
     parser = argparse.ArgumentParser()
