@@ -1,55 +1,13 @@
-import copy
-import os, sys, argparse
-import simplejson as json
-from collections import OrderedDict
+import os, sys
 from tabulate import tabulate
 import ioany
-import ezbpg
-from .utils import process, dumpall, project, stroll, stroll_over
-# from ezbpg.core import describe_partition
 
-def parse_args():
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--infile", help="csv file to parse", required=True)
-    parser.add_argument("--stroll", help="stroll", action="store_true")
-    parser.add_argument("--stroll2", help="stroll2", action="store_true")
-    parser.add_argument("--walk", help="walk", action="store_true")
-    parser.add_argument("--dump", help="dump", action="store_true")
-    return parser.parse_args()
-
-def mkdir_soft(dirpath):
-    if not os.path.exists(dirpath):
-        os.mkdir(dirpath)
-
-def main():
-    args = parse_args()
-
-    g = ezbpg.slurp(args.infile)
-    print("Consumed %d edge observations, of which %d were distinct." % (g.observed,g.distinct))
-    r = process(g)
-
-    outdir = 'comp'
-    if args.dump:
-        dumpall(outdir,r)
-        project(outdir,r)
-
-    if args.stroll:
-        for d in stroll(r):
-            print(d)
-
-    if args.stroll2:
-        stroll_over(r)
-
-    print("done")
-
-if __name__ == '__main__':
-    main()
-
-
+"""
+A nifty module of nifty support functions.
 """
 
 def process(g):
-    "Partitions and refines our graph :g, and prints some nice stats about it."
+    """Partitions and refines our graph :g, and prints some nice stats about it."""
     r = g.partition().refine()
     rows,total = r.describe()
     print(tabulate(rows,headers="firstrow"))
@@ -84,8 +42,10 @@ def dumpall(outdir,r):
                 ezbpg.ioutil.save_edges(f,edgelist)
 
 def flatten(d):
-    "Clobbers the 'graph' element of our dict with its stringified version,
-    to make the dict itself printable."
+    """
+    Clobbers the 'graph' element of our dict with its stringified version,
+    to make the dict itself printable.
+    """
     g = d['graph']
     d['graph'] = str(g)
     return d
@@ -100,4 +60,46 @@ def stroll_over(r):
 def stroll(r):
     for d in r.walk():
         yield flatten(d)
+
+
 """
+def parse_args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--infile", help="csv file to parse", required=True)
+    parser.add_argument("--stroll", help="stroll", action="store_true")
+    parser.add_argument("--stroll2", help="stroll2", action="store_true")
+    parser.add_argument("--walk", help="walk", action="store_true")
+    parser.add_argument("--dump", help="dump", action="store_true")
+    return parser.parse_args()
+
+def main():
+    args = parse_args()
+
+    g = ezbpg.slurp(args.infile)
+    print("Consumed %d edge observations, of which %d were distinct." % (g.observed,g.distinct))
+    r = process(g)
+
+    outdir = 'comp'
+    if args.dump:
+        dumpall(outdir,r)
+        project(outdir,r)
+
+    if args.stroll:
+        for d in stroll(r):
+            print(d)
+
+    if args.stroll2:
+        stroll_over(r)
+
+    print("done")
+
+if __name__ == '__main__':
+    main()
+
+
+
+def mkdir_soft(dirpath):
+    if not os.path.exists(dirpath):
+        os.mkdir(dirpath)
+"""
+
