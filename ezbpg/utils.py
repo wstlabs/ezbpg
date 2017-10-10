@@ -1,5 +1,7 @@
 import os, sys
+from collections import Counter
 from tabulate import tabulate
+from itertools import combinations
 import ioany
 from . import ioutil
 
@@ -66,45 +68,21 @@ def stroll(r):
     for d in r.walk():
         yield flatten(d)
 
+def neighbors_a(g):
+    for bnode,alist in g.b.items():
+        # print(f'bnode={bnode},alist={alist}')
+        for pair in combinations(alist,2):
+            yield pair
 
-"""
-def parse_args():
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--infile", help="csv file to parse", required=True)
-    parser.add_argument("--stroll", help="stroll", action="store_true")
-    parser.add_argument("--stroll2", help="stroll2", action="store_true")
-    parser.add_argument("--walk", help="walk", action="store_true")
-    parser.add_argument("--dump", help="dump", action="store_true")
-    return parser.parse_args()
+def neighbor_graph_a(g):
+    pairs = neighbors_a(g)
+    return Counter(pairs)
 
-def main():
-    args = parse_args()
-
-    g = ezbpg.slurp(args.infile)
-    print("Consumed %d edge observations, of which %d were distinct." % (g.observed,g.distinct))
-    r = process(g)
-
-    outdir = 'comp'
-    if args.dump:
-        dumpall(outdir,r)
-        project(outdir,r)
-
-    if args.stroll:
-        for d in stroll(r):
-            print(d)
-
-    if args.stroll2:
-        stroll_over(r)
-
-    print("done")
-
-if __name__ == '__main__':
-    main()
-
-
-
-def mkdir_soft(dirpath):
-    if not os.path.exists(dirpath):
-        os.mkdir(dirpath)
-"""
+def __neighbor_graph_a(g):
+    w = defaultdict(int)
+    for bnode,alist in g.b.items():
+        print(f'bnode={bnode},alist={alist}')
+        for pair in combinations(alist,2):
+            w[pair] += 1
+    return w
 
