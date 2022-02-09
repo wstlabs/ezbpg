@@ -27,9 +27,11 @@ The targeted use case is when you've been given a dataset of (potentially messy 
 
 And, via the `--export` option, you can export to a directory structure with every component available for inspection, arranged by cardinality class. 
 
-That's all it does.  It doesn't handle other kinds of graphs, it doesn't tie to any graph databases; it doesn't scale to petabytes or shard across time zones.  The focus is on simplicity (it has no dependencies outside of the standard library) and ease of, use while aiming to stay reasonably performant.
+That's all it does.  It doesn't handle other kinds of graphs, it doesn't recognize diverse input formats or tie to graph databases; it doesn't scale to petabytes or shard across time zones.  The focus is on simplicity (it has no dependencies outside of the standard library) and ease of, use while aiming to stay reasonably performant.  If you need a real graph library, you should of course use [NetworkX](https://networkx.org). 
 
-It was initially developed as a tool for examining FK (foreign key) relations in dumps from SQL tables (where it was alleged that these should obey certain cardinality constraints - but when you drilled down into the data, it turned out they did not).  Some of these datasets are included in the test suite, described below.  
+It was initially developed as a tool for examining FK (foreign key) relations in dumps from SQL tables (where it was alleged that these should obey certain cardinality constraints - but when you drilled down into the data, it turned out they did not).  
+
+For those uses cases, the tool proved to be quite effective.  Some of these datasets for these use cases are included in the test suite, described below.  
 
 ## Status
 
