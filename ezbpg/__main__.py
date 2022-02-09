@@ -20,8 +20,8 @@ def main():
     pl = "" if count == 1 else "s" 
     print(f"With {count} component{pl} total")
 
-    if args.outdir:
-        r.extract_categories(args.outdir)
+    if args.export:
+        r.extract_categories(args.export)
 
     if args.stroll:
         for info in r.walk():
