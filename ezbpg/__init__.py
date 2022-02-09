@@ -1,10 +1,18 @@
-from ezbpg.ioutil import purify, csviter
-from ezbpg.core import BipartiteGraph
+"""Provides a container class for simple BipartiteGraphs, with summary statistics.
 
-def ingest(edgeseq):
-    return BipartiteGraph(edgeseq)
+Sample usage goes like this:
 
-def slurp(path):
-    edgeseq = purify(csviter(path))
-    return ingest(edgeseq)
+    import ezbpg
+
+    g = ezbpg.read_csv(args.infile)
+    r = g.partition().refine()
+    r.describe()
+"""
+__version__ = '0.1.2'
+
+from .core import BipartiteGraph, RefinedPartition
+from typing import Dict, Any, Optional
+
+def read_csv(path: str, encoding: str = 'utf-8', csvargs: Optional[Dict[str,Any]] = None) -> BipartiteGraph:
+    return BipartiteGraph.read_csv(path, encoding, csvargs)
 
