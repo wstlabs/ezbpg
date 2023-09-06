@@ -19,7 +19,7 @@ MultPair = Tuple[int, int]
 ForestMap = DefaultDict[Tuple[int, int], List['BipartiteGraph']]
 
 @dataclass
-class BPGTally(object):
+class BPGTally:
     """A simple counting struct providing number of distinct and observed edges, respectively, 
     after consuming a sequence of (possibly duplicate) edges."""
     distinct: int 
@@ -175,7 +175,7 @@ class BipartiteGraph:
         return BipartiteGraph(edgeseq)
 
 
-class BipartiteGraphPartition(object):
+class BipartiteGraphPartition:
     """
     A simple container representing a special partition of BipartiteGraph structs
     represented as a dict-of-list structs, where the keys in the dicts are tuples 
@@ -218,7 +218,7 @@ def partition_forest(g: BipartiteGraph, sort: bool = True) -> ForestMap:
 
 
 @dataclass
-class RPInfo(object):
+class RPInfo:
     category: str
     dims: Tuple[int, int]
     seq: int
@@ -230,14 +230,14 @@ class RPInfo(object):
         return f"{self.category}: dims={_dims}, seq={self.seq} : {self.graph}"
 
 @dataclass
-class RPSurvey(object):
-    rows: Tuple[List[List[str]]]
-    total: Dict[str, int]
+class RPSurvey:
+    rows: list[list[str]]
+    total: dict[str, int]
 
     def describe(self) -> str: 
         return tabulate(self.rows, headers='firstrow')
 
-class RefinedPartition(object):
+class RefinedPartition:
     """
     A simple (immutable) container representing a 'refined partition' of a forest,
     wherein the keys are category groupings based on the tags ('1-1','1-n','m-1','m-n'),
@@ -294,7 +294,7 @@ def build_refined_partition(p: BipartiteGraphPartition) -> Dict[str, dict]:
     return r
 
 def project_refined_partition(r: RefinedPartition) -> Tuple[list, list]:
-    """(DEPRECATED) Given a RefinedPartition object,
+    """(DEPRECATED) Given a RefinedPartition instance,
     returns a pair of dataframe-like structs showing how each edge maps to a specific
     component.  Useful for detailed investigations, but currently deprecated."""
     rowset = []
@@ -344,11 +344,11 @@ longform = {
     'm-n': 'many-to-many'
 }
 def survey_refined_partition(r: Dict[str, dict]) -> RPSurvey: 
-    """Given the internal dict for a RefinedPartition object, returns a pair of 
+    """Given the internal dict for a RefinedPartition instance, returns a pair of 
     special survey structures used for the nifty `describe` method for that class."""
     total: DefaultDict[str, int] = defaultdict(int)
     headerkeys = ('class', 'component', 'edge', 'vertex-A', 'vertex-B')
-    rows = [['classes', 'components', 'edges', 'vertices(A)', 'vertices(B)']]
+    rows: list[list[str]] = [['classes', 'components', 'edges', 'vertices(A)', 'vertices(B)']]
     for tag in sorted(r.keys()):
         count = defaultdict(int)
         compclasses = r[tag]
@@ -432,7 +432,8 @@ def _row2edge(row: List[str]) -> EdgePair:
     """ 
     if len(row) != 2:
         raise ValueError("invalid row")
-    return tuple(row)
+    (x, y) = row
+    return (x, y) 
 
 def mkdir_soft(dirpath: str) -> None:
     if not os.path.exists(dirpath):
