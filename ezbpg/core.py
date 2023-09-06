@@ -261,7 +261,7 @@ class RefinedPartition(object):
         for (k, category) in self.items():
             for t in sorted(category.keys()):
                 for (i, graph) in enumerate(category[t]):
-                    param = {'category': k, 'dims': t, 'seq': i+1, 'graph': graph}
+                    param = {'category': k, 'dims': t, 'seq': i + 1, 'graph': graph}
                     yield RPInfo(**param)
 
     def project(self) -> Tuple[list, list]:
