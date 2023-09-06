@@ -320,10 +320,14 @@ def simplify_multpair(multpair: MultPair):
     """Given a MultPair (a pair of integers representing a multiplicity class, returns a 
     string descriptor for its idealized equivalence class."""
     (nj, nk) = multpair
-    if (nj, nk) == (1, 1): return '1-1'
-    elif nj == 1: return '1-n'
-    elif nk == 1: return 'm-1'
-    else: return 'm-n'
+    if (nj, nk) == (1, 1): 
+        return '1-1'
+    elif nj == 1: 
+        return '1-n'
+    elif nk == 1: 
+        return 'm-1'
+    else: 
+        return 'm-n'
 
 
 #
