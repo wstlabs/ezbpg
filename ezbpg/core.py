@@ -334,8 +334,10 @@ def simplify_multpair(multpair: MultPair):
 # bipartite graph).
 #
 longform = {
-    '1-1': '1-to-1',    '1-n': '1-to-many',
-    'm-1': 'many-to-1', 'm-n': 'many-to-many',
+    '1-1': '1-to-1',
+    '1-n': '1-to-many',
+    'm-1': 'many-to-1', 
+    'm-n': 'many-to-many'
 }
 def survey_refined_partition(r: Dict[str, dict]) -> RPSurvey: 
     """Given the internal dict for a RefinedPartition object, returns a pair of 
