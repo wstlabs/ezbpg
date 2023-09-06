@@ -8,15 +8,15 @@ import itertools
 from collections import defaultdict, deque, Counter
 from tabulate import tabulate
 from dataclasses import dataclass
-from typing import Tuple, List, Dict, DefaultDict, Iterator, Deque, Any, Optional
+from typing import Iterator, Optional, Any
 
 Vertex = str 
-AdjMap = DefaultDict[Vertex, set] 
-AdjMapSorted = Dict[Vertex, List[Vertex]] 
-EdgePair = Tuple[Vertex, Vertex]
-RowIter = Iterator[List[str]]
-MultPair = Tuple[int, int]
-ForestMap = DefaultDict[Tuple[int, int], List['BipartiteGraph']]
+AdjMap = defaultdict[Vertex, set] 
+AdjMapSorted = dict[Vertex, list[Vertex]] 
+EdgePair = tuple[Vertex, Vertex]
+RowIter = Iterator[list[str]]
+MultPair = tuple[int, int]
+ForestMap = defaultdict[tuple[int, int], list['BipartiteGraph']]
 
 @dataclass
 class BPGTally:
@@ -79,7 +79,7 @@ class BipartiteGraph:
         self.tally.observed += 1
 
     @property
-    def dims(self) -> Tuple[int, int]:
+    def dims(self) -> tuple[int, int]:
         return (len(self.a), len(self.b))
 
     def __len__(self) -> int:
@@ -89,7 +89,7 @@ class BipartiteGraph:
         name = self.__class__.__name__
         return f"{name}(edges={len(self)},A={len(self.a)},B={len(self.b)})"
 
-    def stats(self) -> Dict[str, Any]:
+    def stats(self) -> dict[str, Any]:
         return {
             'edges': self.tally.distinct,
             'vertices': {
@@ -99,7 +99,7 @@ class BipartiteGraph:
         }
 
     # Returns a dict of valence histograms for each adjacency map. 
-    def valence_histogram(self) -> Dict[str, Any]:
+    def valence_histogram(self) -> dict[str, Any]:
         return {'A': _valhist(self.a), 'B': _valhist(self.b)}
 
     # A pair of alternate accessors for our assocation maps a and b,
@@ -157,19 +157,19 @@ class BipartiteGraph:
     def partition(self) -> 'BipartiteGraphPartition':
         return BipartiteGraphPartition(self)
 
-    def write_csv(self, f: io.TextIOWrapper, csvargs: Optional[Dict[str, Any]] = None) -> None: 
+    def write_csv(self, f: io.TextIOWrapper, csvargs: Optional[dict[str, Any]] = None) -> None: 
         if csvargs is None:
             csvargs = {}
         writer = csv.writer(f, **csvargs)
         for edge in self.edges():
             writer.writerow(edge)
 
-    def save_csv(self, path: str, encoding: str = 'utf-8', csvargs: Optional[Dict[str, Any]] = None) -> None:
+    def save_csv(self, path: str, encoding: str = 'utf-8', csvargs: Optional[dict[str, Any]] = None) -> None:
         with open(path, "wt", encoding=encoding) as f:
             return self.write_csv(f, csvargs)
 
     @classmethod
-    def read_csv(cls, path: str, encoding: str = 'utf-8', csvargs: Optional[Dict[str, Any]] = None) -> 'BipartiteGraph': 
+    def read_csv(cls, path: str, encoding: str = 'utf-8', csvargs: Optional[dict[str, Any]] = None) -> 'BipartiteGraph': 
         rowiter = _csviter(path, encoding, csvargs)
         edgeseq = (_row2edge(row) for row in rowiter)
         return BipartiteGraph(edgeseq)
@@ -196,7 +196,7 @@ class BipartiteGraphPartition:
     def keys(self) -> Iterator[MultPair]:
         yield from self.r.keys()
 
-    def items(self) -> Iterator[Tuple[MultPair, List['BipartiteGraph']]]:
+    def items(self) -> Iterator[tuple[MultPair, list['BipartiteGraph']]]:
         yield from self.r.items()
 
     def __len__(self) -> int:
@@ -220,7 +220,7 @@ def partition_forest(g: BipartiteGraph, sort: bool = True) -> ForestMap:
 @dataclass
 class RPInfo:
     category: str
-    dims: Tuple[int, int]
+    dims: tuple[int, int]
     seq: int
     graph: BipartiteGraph
 
@@ -249,10 +249,10 @@ class RefinedPartition:
     """
 
     def __init__(self, p: BipartiteGraphPartition) -> None:
-        self.r: Dict[str, dict] = build_refined_partition(p)
+        self.r: dict[str, dict] = build_refined_partition(p)
         self.survey: RPSurvey = survey_refined_partition(self.r)
 
-    def items(self) -> Iterator[Tuple[str, dict]]:
+    def items(self) -> Iterator[tuple[str, dict]]:
         yield from self.r.items()
 
     def walk(self) -> Iterator[RPInfo]:
@@ -264,7 +264,7 @@ class RefinedPartition:
                     param = {'category': k, 'dims': t, 'seq': i + 1, 'graph': graph}
                     yield RPInfo(**param)
 
-    def project(self) -> Tuple[list, list]:
+    def project(self) -> tuple[list, list]:
         return project_refined_partition(self)
 
     def extract_categories(self, outdir: str) -> None:
@@ -283,17 +283,17 @@ class RefinedPartition:
 # None of these are likely to be useful outside this module.
 #
 
-def build_refined_partition(p: BipartiteGraphPartition) -> Dict[str, dict]: 
+def build_refined_partition(p: BipartiteGraphPartition) -> dict[str, dict]: 
     """Creates the underlying dict used by the RefinedPartition struct.  
     See the docstring for that class for details."""
     tags = ('1-1', '1-n', 'm-1', 'm-n')
-    r: Dict[str, dict] = {tag: {} for tag in tags}
+    r: dict[str, dict] = {tag: {} for tag in tags}
     for (multpair, graphlist) in p.items():
         tag = simplify_multpair(multpair)
         r[tag][multpair] = graphlist 
     return r
 
-def project_refined_partition(r: RefinedPartition) -> Tuple[list, list]:
+def project_refined_partition(r: RefinedPartition) -> tuple[list, list]:
     """(DEPRECATED) Given a RefinedPartition instance,
     returns a pair of dataframe-like structs showing how each edge maps to a specific
     component.  Useful for detailed investigations, but currently deprecated."""
@@ -312,7 +312,7 @@ def project_refined_partition(r: RefinedPartition) -> Tuple[list, list]:
     return (rowset, cluster)
 
 
-def _valhist(x: AdjMap) -> Dict[int, int]:
+def _valhist(x: AdjMap) -> dict[int, int]:
     """Returns the valence histogram for a given adjacency map"""
     return dict(Counter(len(x[k]) for k in x))
 
@@ -343,10 +343,10 @@ longform = {
     'm-1': 'many-to-1', 
     'm-n': 'many-to-many'
 }
-def survey_refined_partition(r: Dict[str, dict]) -> RPSurvey: 
+def survey_refined_partition(r: dict[str, dict]) -> RPSurvey: 
     """Given the internal dict for a RefinedPartition instance, returns a pair of 
     special survey structures used for the nifty `describe` method for that class."""
-    total: DefaultDict[str, int] = defaultdict(int)
+    total: defaultdict[str, int] = defaultdict(int)
     headerkeys = ('class', 'component', 'edge', 'vertex-A', 'vertex-B')
     rows: list[list[str]] = [['classes', 'components', 'edges', 'vertices(A)', 'vertices(B)']]
     for tag in sorted(r.keys()):
@@ -396,8 +396,8 @@ def peel_component(x: AdjMap, y: AdjMap) -> Iterator[EdgePair]:
         raise RuntimeError("corrupted state")
     if not (x and y):
         raise RuntimeError("invalid usage - empty adjacency map pair")
-    jj: Deque = deque(itertools.islice(x.keys(), 0, 1))
-    kk: Deque = deque()
+    jj: deque = deque(itertools.islice(x.keys(), 0, 1))
+    kk: deque = deque()
     hungry = True
     while hungry:
         if len(jj):
@@ -418,14 +418,14 @@ def peel_component(x: AdjMap, y: AdjMap) -> Iterator[EdgePair]:
             hungry = False
 
 
-def _csviter(path: str, encoding: str = 'utf-8', csvargs: Optional[Dict[str, Any]] = None) -> RowIter: 
+def _csviter(path: str, encoding: str = 'utf-8', csvargs: Optional[dict[str, Any]] = None) -> RowIter: 
     """A convenience function to produce a csv row iterator from the given arguments in the natural way."""
     if csvargs is None:
         csvargs = {}
     with open(path, "rt", encoding=encoding) as f:
         yield from csv.reader(f, **csvargs)
 
-def _row2edge(row: List[str]) -> EdgePair: 
+def _row2edge(row: list[str]) -> EdgePair: 
     """
     Takes a parsed CSV row (assumed to be of length 2), and returns a proper edge pair.
     This is of course a trivial mapping, equivalent to tuple(row). Tt only exists to verify the row length constraint.
