@@ -210,13 +210,6 @@ class BipartiteGraphPartition:
         return RefinedPartition(self)
 
 
-def partition_forest(g: BipartiteGraph, sort: bool = True) -> ForestMap: 
-    p: ForestMap = defaultdict(list)
-    for subg in g.extract_components():
-        p[subg.dims].append(subg)
-    return p
-
-
 @dataclass
 class RPInfo:
     category: str
@@ -279,9 +272,14 @@ class RefinedPartition:
                 info.graph.save_csv(outpath)
 
 #
-# Various support functions.  
-# None of these are likely to be useful outside this module.
+# Various support functions.  Not likely to be useful outside this mdodule.
 #
+
+def partition_forest(g: BipartiteGraph, sort: bool = True) -> ForestMap: 
+    p: ForestMap = defaultdict(list)
+    for subg in g.extract_components():
+        p[subg.dims].append(subg)
+    return p
 
 def build_refined_partition(p: BipartiteGraphPartition) -> dict[str, dict]: 
     """Creates the underlying dict used by the RefinedPartition struct.  
@@ -311,7 +309,6 @@ def project_refined_partition(r: RefinedPartition) -> tuple[list, list]:
             j += 1
     return (rowset, cluster)
 
-
 def _valhist(x: AdjMap) -> dict[int, int]:
     """Returns the valence histogram for a given adjacency map"""
     return dict(Counter(len(x[k]) for k in x))
@@ -328,7 +325,6 @@ def simplify_multpair(multpair: MultPair):
         return 'm-1'
     else: 
         return 'm-n'
-
 
 #
 # Given a refined partition struct r, generates a nice rowset describing
@@ -416,7 +412,6 @@ def peel_component(x: AdjMap, y: AdjMap) -> Iterator[EdgePair]:
                     jj.append(j)
         else:
             hungry = False
-
 
 def _csviter(path: str, encoding: str = 'utf-8', csvargs: Optional[dict[str, Any]] = None) -> RowIter: 
     """A convenience function to produce a csv row iterator from the given arguments in the natural way."""

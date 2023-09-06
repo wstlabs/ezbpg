@@ -8,10 +8,8 @@ def parse_args():
     parser.add_argument("--export", type=str, required=False, help="optional output directory for data dumps")
     return parser.parse_args()
 
-
 def main():
     args = parse_args()
-
     g = ezbpg.read_csv(args.infile)
     print(f"Our graph has {g.tally.caption}")
     r = g.partition().refine() 
@@ -31,5 +29,4 @@ def main():
 
 if __name__ == '__main__':
     main()
-
 
