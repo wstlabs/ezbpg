@@ -8,7 +8,7 @@ import itertools
 from collections import defaultdict, deque, Counter
 from tabulate import tabulate
 from dataclasses import dataclass
-from typing import Tuple, List, Dict, DefaultDict, Hashable, Iterator, Deque, Any, Optional
+from typing import Tuple, List, Dict, DefaultDict, Iterator, Deque, Any, Optional
 
 Vertex = str 
 AdjMap = DefaultDict[Vertex, set] 
