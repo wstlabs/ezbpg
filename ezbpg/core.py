@@ -78,7 +78,6 @@ class BipartiteGraph:
             self.tally.distinct += 1
         self.tally.observed += 1
 
-
     @property
     def dims(self) -> Tuple[int, int]:
         return (len(self.a), len(self.b))
@@ -127,7 +126,6 @@ class BipartiteGraph:
         elif strict:
             raise ValueError("can't remove edge %s - not present" % str(edge))
 
-
     def edges(self, sort: bool = False) -> Iterator[EdgePair]:
         for j in self.a:
             if sort:
@@ -175,7 +173,6 @@ class BipartiteGraph:
         rowiter = _csviter(path, encoding, csvargs)
         edgeseq = (_row2edge(row) for row in rowiter)
         return BipartiteGraph(edgeseq)
-
 
 
 class BipartiteGraphPartition(object):
@@ -281,13 +278,10 @@ class RefinedPartition(object):
                 outpath = f"{subdir}/{nj},{nk}-{info.seq}.csv"
                 info.graph.save_csv(outpath)
 
-
-
 #
 # Various support functions.  
 # None of these are likely to be useful outside this module.
 #
-
 
 def build_refined_partition(p: BipartiteGraphPartition) -> Dict[str, dict]: 
     """Creates the underlying dict used by the RefinedPartition struct.  
@@ -330,7 +324,6 @@ def simplify_multpair(multpair: MultPair):
     elif nj == 1: return '1-n'
     elif nk == 1: return 'm-1'
     else: return 'm-n'
-
 
 
 #
