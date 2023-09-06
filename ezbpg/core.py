@@ -11,12 +11,12 @@ from dataclasses import dataclass
 from typing import Tuple, List, Dict, DefaultDict, Hashable, Iterator, Deque, Any, Optional
 
 Vertex = str 
-AdjMap = DefaultDict[Vertex,set] 
-AdjMapSorted = Dict[Vertex,List[Vertex]] 
-EdgePair = Tuple[Vertex,Vertex]
+AdjMap = DefaultDict[Vertex, set] 
+AdjMapSorted = Dict[Vertex, List[Vertex]] 
+EdgePair = Tuple[Vertex, Vertex]
 RowIter = Iterator[List[str]]
-MultPair = Tuple[int,int]
-ForestMap = DefaultDict[Tuple[int,int],List['BipartiteGraph']]
+MultPair = Tuple[int, int]
+ForestMap = DefaultDict[Tuple[int, int], List['BipartiteGraph']]
 
 @dataclass
 class BPGTally(object):
@@ -31,12 +31,11 @@ class BPGTally(object):
 
     @property
     def caption(self) -> str:
-        pl: str = "" if self.distinct == 1 else "s"
+        pl: str = '' if self.distinct == 1 else 's'
         return f"{self.distinct} distinct edge{pl} (out of {self.observed} observed, with {self.redundant} redundant)"
 
 
-
-class BipartiteGraph(object):
+class BipartiteGraph:
     """
     A simple representation of a BipartiteGraph.
     """
@@ -57,7 +56,7 @@ class BipartiteGraph(object):
         """
         self.a: AdjMap = defaultdict(set) 
         self.b: AdjMap = defaultdict(set) 
-        self.tally = BPGTally(0,0)
+        self.tally = BPGTally(0, 0)
 
     def consume(self, edgeseq: Iterator[EdgePair]) -> None:
         """Ingests a sequence of edges (adding each edge pair if not already seen"""
@@ -67,13 +66,13 @@ class BipartiteGraph(object):
 
     def has_edge(self, edge: EdgePair) -> bool:
         """Returns True if the given :edge tuple exists in our graph, False otherwise"""
-        (j,k) = edge
+        (j, k) = edge
         return (j in self.a) and (k in self.b) and (k in self.a[j]) and (j in self.b[k])
 
     def add(self, edge: EdgePair):
         """Adds an :edge tuple (a tuple representing a pair vertices) to the graph, if it doesn't already exist."""
         if not self.has_edge(edge):
-            (j,k) = edge
+            (j, k) = edge
             self.a[j].add(k)
             self.b[k].add(j)
             self.tally.distinct += 1
@@ -81,8 +80,8 @@ class BipartiteGraph(object):
 
 
     @property
-    def dims(self) -> Tuple[int,int]:
-        return (len(self.a),len(self.b))
+    def dims(self) -> Tuple[int, int]:
+        return (len(self.a), len(self.b))
 
     def __len__(self) -> int:
         return self.tally.distinct
@@ -91,36 +90,33 @@ class BipartiteGraph(object):
         name = self.__class__.__name__
         return f"{name}(edges={len(self)},A={len(self.a)},B={len(self.b)})"
 
-    def stats(self) -> Dict[str,Any]:
+    def stats(self) -> Dict[str, Any]:
         return {
             'edges': self.tally.distinct,
             'vertices': {
-                'A':len(self.a),
-                'B':len(self.b)
+                'A': len(self.a),
+                'B': len(self.b)
             }
         }
 
     # Returns a dict of valence histograms for each adjacency map. 
-    def valence_histogram(self) -> Dict[str,Any]:
-        return {
-            'A':_valhist(self.a),
-            'B':_valhist(self.b)
-        }
+    def valence_histogram(self) -> Dict[str, Any]:
+        return {'A': _valhist(self.a), 'B': _valhist(self.b)}
 
     # A pair of alternate accessors for our assocation maps a and b,
     # for serialization purposes.  Each returns a dict-of-list struct
     # (where the list of connecting vertices is also sorted) rather than 
     # the dict-of-set struct used to represent these maps internally.
     def aa(self) -> AdjMapSorted:
-        return {k:sorted(self.a[k]) for k in self.a}
+        return {k: sorted(self.a[k]) for k in self.a}
 
     def bb(self) -> AdjMapSorted:
-        return {k:sorted(self.b[k]) for k in self.b}
+        return {k: sorted(self.b[k]) for k in self.b}
 
     def remove(self, edge: EdgePair, strict: bool = True) -> None:
         """Removes an :edge from our graph, which it is presumed to contain."""
         if self.has_edge(edge):
-            (j,k) = edge
+            (j, k) = edge
             self.a[j].remove(k)
             self.b[k].remove(j)
             if len(self.a[j]) == 0:
@@ -136,10 +132,10 @@ class BipartiteGraph(object):
         for j in self.a:
             if sort:
                 for k in sorted(self.a[j]):
-                    yield (j,k)
+                    yield (j, k)
             else:
                 for k in self.a[j]:
-                    yield (j,k)
+                    yield (j, k)
 
     def is_empty(self) -> bool:
         """Returns True if the graph is empty, false otherwise"""
@@ -163,19 +159,19 @@ class BipartiteGraph(object):
     def partition(self) -> 'BipartiteGraphPartition':
         return BipartiteGraphPartition(self)
 
-    def write_csv(self, f: io.TextIOWrapper, csvargs: Optional[Dict[str,Any]] = None) -> None: 
+    def write_csv(self, f: io.TextIOWrapper, csvargs: Optional[Dict[str, Any]] = None) -> None: 
         if csvargs is None:
             csvargs = {}
         writer = csv.writer(f, **csvargs)
         for edge in self.edges():
             writer.writerow(edge)
 
-    def save_csv(self, path: str, encoding: str = 'utf-8', csvargs: Optional[Dict[str,Any]] = None) -> None:
+    def save_csv(self, path: str, encoding: str = 'utf-8', csvargs: Optional[Dict[str, Any]] = None) -> None:
         with open(path, "wt", encoding=encoding) as f:
             return self.write_csv(f, csvargs)
 
     @classmethod
-    def read_csv(cls, path: str, encoding: str = 'utf-8', csvargs: Optional[Dict[str,Any]] = None) -> 'BipartiteGraph': 
+    def read_csv(cls, path: str, encoding: str = 'utf-8', csvargs: Optional[Dict[str, Any]] = None) -> 'BipartiteGraph': 
         rowiter = _csviter(path, encoding, csvargs)
         edgeseq = (_row2edge(row) for row in rowiter)
         return BipartiteGraph(edgeseq)
@@ -203,7 +199,7 @@ class BipartiteGraphPartition(object):
     def keys(self) -> Iterator[MultPair]:
         yield from self.r.keys()
 
-    def items(self) -> Iterator[Tuple[MultPair,List['BipartiteGraph']]]:
+    def items(self) -> Iterator[Tuple[MultPair, List['BipartiteGraph']]]:
         yield from self.r.items()
 
     def __len__(self) -> int:
@@ -227,23 +223,22 @@ def partition_forest(g: BipartiteGraph, sort: bool = True) -> ForestMap:
 @dataclass
 class RPInfo(object):
     category: str
-    dims: Tuple[int,int]
+    dims: Tuple[int, int]
     seq: int
     graph: BipartiteGraph
 
     @property
     def caption(self) -> str:
-        _dims = str(self.dims).replace(" ","")
+        _dims = str(self.dims).replace(' ', '')
         return f"{self.category}: dims={_dims}, seq={self.seq} : {self.graph}"
 
 @dataclass
 class RPSurvey(object):
     rows: Tuple[List[List[str]]]
-    total: Dict[str,int]
+    total: Dict[str, int]
 
-    # def describe(self) -> Iterator[str]:
     def describe(self) -> str: 
-        return tabulate(self.rows,headers="firstrow")
+        return tabulate(self.rows, headers='firstrow')
 
 class RefinedPartition(object):
     """
@@ -257,10 +252,10 @@ class RefinedPartition(object):
     """
 
     def __init__(self, p: BipartiteGraphPartition) -> None:
-        self.r: Dict[str,dict] = build_refined_partition(p)
+        self.r: Dict[str, dict] = build_refined_partition(p)
         self.survey: RPSurvey = survey_refined_partition(self.r)
 
-    def items(self) -> Iterator[Tuple[str,dict]]:
+    def items(self) -> Iterator[Tuple[str, dict]]:
         yield from self.r.items()
 
     def walk(self) -> Iterator[RPInfo]:
@@ -272,7 +267,7 @@ class RefinedPartition(object):
                     param = {'category': k, 'dims': t, 'seq': i+1, 'graph': graph}
                     yield RPInfo(**param)
 
-    def project(self) -> Tuple[list,list]:
+    def project(self) -> Tuple[list, list]:
         return project_refined_partition(self)
 
     def extract_categories(self, outdir: str) -> None:
@@ -282,7 +277,7 @@ class RefinedPartition(object):
             subdir = f"{outdir}/{key}"
             mkdir_soft(subdir)
             for info in group: 
-                (nj,nk) = info.dims
+                (nj, nk) = info.dims
                 outpath = f"{subdir}/{nj},{nk}-{info.seq}.csv"
                 info.graph.save_csv(outpath)
 
@@ -294,44 +289,44 @@ class RefinedPartition(object):
 #
 
 
-def build_refined_partition(p: BipartiteGraphPartition) -> Dict[str,dict]: 
+def build_refined_partition(p: BipartiteGraphPartition) -> Dict[str, dict]: 
     """Creates the underlying dict used by the RefinedPartition struct.  
     See the docstring for that class for details."""
-    tags = ('1-1','1-n','m-1','m-n')
-    r: Dict[str,dict] = {tag:{} for tag in tags}
-    for (multpair,graphlist) in p.items():
+    tags = ('1-1', '1-n', 'm-1', 'm-n')
+    r: Dict[str, dict] = {tag: {} for tag in tags}
+    for (multpair, graphlist) in p.items():
         tag = simplify_multpair(multpair)
         r[tag][multpair] = graphlist 
     return r
 
-def project_refined_partition(r: RefinedPartition) -> Tuple[list,list]:
+def project_refined_partition(r: RefinedPartition) -> Tuple[list, list]:
     """(DEPRECATED) Given a RefinedPartition object,
     returns a pair of dataframe-like structs showing how each edge maps to a specific
     component.  Useful for detailed investigations, but currently deprecated."""
     rowset = []
-    cluster,j = [],1
+    cluster, j = [], 1
     for (key, group) in itertools.groupby(r.walk(), lambda x: x.category): 
         for info in group:
             depth = 0
-            (na,nb) = info.dims
-            (_,g) = (info.seq, info.graph)
-            for (a,b) in g.edges():
-                rowset.append([a,b,j])
+            (na, nb) = info.dims
+            (_, g) = (info.seq, info.graph)
+            for (a, b) in g.edges():
+                rowset.append([a, b, j])
                 depth += 1
-            cluster.append([j,na,nb,depth])
+            cluster.append([j, na, nb, depth])
             j += 1
     return (rowset, cluster)
 
 
-def _valhist(x: AdjMap) -> Dict[int,int]:
+def _valhist(x: AdjMap) -> Dict[int, int]:
     """Returns the valence histogram for a given adjacency map"""
     return dict(Counter(len(x[k]) for k in x))
 
 def simplify_multpair(multpair: MultPair):
     """Given a MultPair (a pair of integers representing a multiplicity class, returns a 
     string descriptor for its idealized equivalence class."""
-    (nj,nk) = multpair
-    if (nj,nk) == (1,1): return '1-1'
+    (nj, nk) = multpair
+    if (nj, nk) == (1, 1): return '1-1'
     elif nj == 1: return '1-n'
     elif nk == 1: return 'm-1'
     else: return 'm-n'
@@ -346,15 +341,15 @@ def simplify_multpair(multpair: MultPair):
 # bipartite graph).
 #
 longform = {
-    '1-1':'1-to-1',    '1-n':'1-to-many',
-    'm-1':'many-to-1', 'm-n':'many-to-many',
+    '1-1': '1-to-1',    '1-n': '1-to-many',
+    'm-1': 'many-to-1', 'm-n': 'many-to-many',
 }
-def survey_refined_partition(r: Dict[str,dict]) -> RPSurvey: 
+def survey_refined_partition(r: Dict[str, dict]) -> RPSurvey: 
     """Given the internal dict for a RefinedPartition object, returns a pair of 
     special survey structures used for the nifty `describe` method for that class."""
-    total: DefaultDict[str,int] = defaultdict(int)
-    headerkeys = ('class','component','edge','vertex-A','vertex-B')
-    rows = [["classes","components","edges","vertices(A)","vertices(B)"]]
+    total: DefaultDict[str, int] = defaultdict(int)
+    headerkeys = ('class', 'component', 'edge', 'vertex-A', 'vertex-B')
+    rows = [['classes', 'components', 'edges', 'vertices(A)', 'vertices(B)']]
     for tag in sorted(r.keys()):
         count = defaultdict(int)
         compclasses = r[tag]
@@ -402,7 +397,7 @@ def peel_component(x: AdjMap, y: AdjMap) -> Iterator[EdgePair]:
         raise RuntimeError("corrupted state")
     if not (x and y):
         raise RuntimeError("invalid usage - empty adjacency map pair")
-    jj: Deque = deque(itertools.islice(x.keys(),0,1))
+    jj: Deque = deque(itertools.islice(x.keys(), 0, 1))
     kk: Deque = deque()
     hungry = True
     while hungry:
@@ -411,20 +406,20 @@ def peel_component(x: AdjMap, y: AdjMap) -> Iterator[EdgePair]:
             if j in x:
                 nodes = x.pop(j)
                 for k in nodes:
-                    yield (j,k)
+                    yield (j, k)
                     kk.append(k)
         elif len(kk):
             k = kk.popleft()
             if k in y:
                 nodes = y.pop(k)
                 for j in nodes:
-                    yield (j,k)
+                    yield (j, k)
                     jj.append(j)
         else:
             hungry = False
 
 
-def _csviter(path: str, encoding: str = 'utf-8', csvargs: Optional[Dict[str,Any]] = None) -> RowIter: 
+def _csviter(path: str, encoding: str = 'utf-8', csvargs: Optional[Dict[str, Any]] = None) -> RowIter: 
     """A convenience function to produce a csv row iterator from the given arguments in the natural way."""
     if csvargs is None:
         csvargs = {}
@@ -434,13 +429,11 @@ def _csviter(path: str, encoding: str = 'utf-8', csvargs: Optional[Dict[str,Any]
 def _row2edge(row: List[str]) -> EdgePair: 
     """
     Takes a parsed CSV row (assumed to be of length 2), and returns a proper edge pair.
-    This is of course a trivial mapping, essentially equivalent to tuple(row), and it only
-    exists to verify the row length constraint.
+    This is of course a trivial mapping, equivalent to tuple(row). Tt only exists to verify the row length constraint.
     """ 
     if len(row) != 2:
         raise ValueError("invalid row")
-    (x,y) = row
-    return (x,y)
+    return tuple(row)
 
 def mkdir_soft(dirpath: str) -> None:
     if not os.path.exists(dirpath):

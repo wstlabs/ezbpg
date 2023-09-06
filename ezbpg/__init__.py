@@ -13,6 +13,6 @@ __version__ = '0.1.2'
 from .core import BipartiteGraph, RefinedPartition
 from typing import Dict, Any, Optional
 
-def read_csv(path: str, encoding: str = 'utf-8', csvargs: Optional[Dict[str,Any]] = None) -> BipartiteGraph:
+def read_csv(path: str, encoding: str = 'utf-8', csvargs: Optional[Dict[str, Any]] = None) -> BipartiteGraph:
     return BipartiteGraph.read_csv(path, encoding, csvargs)
 
