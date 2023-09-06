@@ -8,7 +8,7 @@ Sample usage goes like this:
     r = g.partition().refine()
     r.describe()
 """
-__version__ = '0.1.2'
+__version__ = '0.1.3'
 
 from .core import BipartiteGraph, RefinedPartition
 from typing import Dict, Any, Optional
