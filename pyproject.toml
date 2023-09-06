@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "ezbg"
+name = "ezbpg"
 version = "0.1.2"
 description = ""
 authors = ["wstlabs <email-address-not-set@gmail.com>"]
